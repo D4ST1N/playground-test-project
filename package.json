@@ -23,6 +23,7 @@
     "@types/node": "^20.4.1",
     "@types/uuid": "^9.0.2",
     "@vitejs/plugin-vue": "^4.2.3",
+    "eslint-config-prettier": "^8.8.0",
     "prettier": "^3.0.0",
     "sass": "^1.63.6",
     "typescript": "^5.0.2",

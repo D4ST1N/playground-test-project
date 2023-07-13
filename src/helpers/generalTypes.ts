@@ -3,6 +3,7 @@ export interface GameInfo {
   name: string;
   path: string;
   description: string;
+  implemented: boolean;
 }
 
 export enum GameStatus {
@@ -18,7 +19,7 @@ export interface Coordinates {
   y: number;
 }
 
-// This throwing ts 2590 error, bacause made too many unions
+// This throwing ts 2590 error, because made too many unions
 // type HexLetter = 'a' | 'b' | 'c' | 'd' | 'e' | 'f';
 // type HexDigit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 // type HexCharacter = HexLetter | HexDigit;

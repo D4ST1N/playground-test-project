@@ -1,20 +1,23 @@
 <script setup lang="ts">
-import { GameInfo } from '@/helpers/generalTypes';
-import router from '@/router';
+import { GameInfo } from "@/helpers/generalTypes";
+import router from "@/router";
 
 const props = defineProps<{
   gameInfo: GameInfo;
 }>();
 
 function openGame() {
-  router.push({ name: props.gameInfo.path })
+  router.push(`/${props.gameInfo.path}`);
 }
 </script>
 
 <template>
-  <div :class="$style.gameInfo" @click="openGame">
+  <div :class="$style.gameInfo">
     <h3 :class="$style.gameName">{{ props.gameInfo.name }}</h3>
-    <div :class="$style.gameDescription">{{ props.gameInfo.description }}</div>
+    <div :class="$style.gameContent">
+      <div :class="$style.gameDescription">{{ props.gameInfo.description }}</div>
+      <v-btn :disabled="!props.gameInfo.implemented" color="primary" @click="openGame">Play</v-btn>
+    </div>
   </div>
 </template>
 
@@ -31,6 +34,15 @@ function openGame() {
 .gameName {
   color: #fff;
   margin-bottom: 16px;
+}
+
+.gameContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  flex-grow: 1;
 }
 
 .gameDescription {
