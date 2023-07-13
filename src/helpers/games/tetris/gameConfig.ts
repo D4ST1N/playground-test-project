@@ -4,4 +4,5 @@ export const config = {
   cellSize: 40,
   figureMoveInterval: 400,
   rowFallInterval: 250,
+  rowScoreIncreasePercentage: 5,
 };

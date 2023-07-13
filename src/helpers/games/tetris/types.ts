@@ -21,6 +21,15 @@ export enum TetrisFigureType {
   Z = "Z",
 }
 
+export enum TetrisKeyCode {
+  Left = "KeyA",
+  Right = "KeyD",
+  Down = "KeyS",
+  RotateCounterClockwise = "KeyQ",
+  RotateClockwise = "KeyE",
+  Space = "Space"
+}
+
 export enum CellType {
   Empty = "Empty",
 };

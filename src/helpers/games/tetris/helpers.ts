@@ -7,6 +7,10 @@ type ColorMapping = {
   [key in TetrisFigureType | CellType.Empty]: HexCode;
 }
 
+type ScoreMapping = {
+  [key in TetrisFigureType]: number;
+}
+
 type FiguresMapping = {
   [key in TetrisFigureType]: TetrisFigure;
 }
@@ -21,6 +25,16 @@ export const colorMapping: ColorMapping = {
   [TetrisFigureType.Z]: "#f00000",
   [CellType.Empty]: "#fff2",
 };
+
+export const figureScoreMapping: ScoreMapping = {
+  [TetrisFigureType.I]: 1,
+  [TetrisFigureType.J]: 1.5,
+  [TetrisFigureType.L]: 1.5,
+  [TetrisFigureType.O]: 2,
+  [TetrisFigureType.S]: 3,
+  [TetrisFigureType.T]: 2.5,
+  [TetrisFigureType.Z]: 3,
+}
 
 export const emptyCell: TetrisFieldCell = {
   color: colorMapping[CellType.Empty],
