@@ -1,9 +1,23 @@
 export interface GameInfo {
   id: string;
-  name: string;
+  name: GameName;
+  title: string;
   path: string;
   description: string;
   implemented: boolean;
+  cover?: string;
+}
+
+export enum GameName {
+  Tetris = "Tetris",
+  Snake = "Snake",
+  Pacman = "Pacman",
+  Match3 = "Match3",
+  Minesweeper = "Minesweeper",
+  Arkanoid = "Arkanoid",
+  Sudoku = "Sudoku",
+  Solitaire = "Solitaire",
+  TwentyFortyEight = "TwentyFortyEight",
 }
 
 export enum GameStatus {

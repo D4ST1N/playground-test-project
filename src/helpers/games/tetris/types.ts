@@ -23,15 +23,18 @@ export enum TetrisFigureType {
 
 export enum TetrisKeyCode {
   Left = "KeyA",
+  LeftArrow = "ArrowLeft",
   Right = "KeyD",
+  RightArrow = "ArrowRight",
   Down = "KeyS",
-  RotateCounterClockwise = "KeyQ",
-  RotateClockwise = "KeyE",
-  Space = "Space"
+  DownArrow = "ArrowDown",
+  Rotate = "KeyW",
+  RotateArrow = "ArrowUp",
+  Space = "Space",
 }
 
 export enum CellType {
   Empty = "Empty",
-};
+}
 
 export type TetrisGameField = TetrisFieldCell[][];

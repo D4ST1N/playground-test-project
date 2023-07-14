@@ -1,6 +1,4 @@
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <div :class="$style.scorePanel">
@@ -12,6 +10,8 @@
 <style lang="scss" module>
 .scorePanel {
   display: flex;
-  width: 200px;
+  flex-direction: column;
+  align-items: flex-end;
+  height: 210px;
 }
 </style>

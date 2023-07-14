@@ -12,13 +12,28 @@ function openGame() {
 </script>
 
 <template>
-  <div :class="$style.gameInfo">
-    <h3 :class="$style.gameName">{{ props.gameInfo.name }}</h3>
-    <div :class="$style.gameContent">
-      <div :class="$style.gameDescription">{{ props.gameInfo.description }}</div>
+  <v-card class="" width="300">
+    <v-img :src="props.gameInfo.cover" height="200px" cover></v-img>
+
+    <v-card-title>
+      {{ props.gameInfo.name }}
+    </v-card-title>
+
+    <v-card-actions>
       <v-btn :disabled="!props.gameInfo.implemented" color="primary" @click="openGame">Play</v-btn>
-    </div>
-  </div>
+
+      <v-spacer></v-spacer>
+    </v-card-actions>
+
+    <v-expand-transition>
+      <div>
+        <v-divider></v-divider>
+        <v-card-text>
+          {{ props.gameInfo.description }}
+        </v-card-text>
+      </div>
+    </v-expand-transition>
+  </v-card>
 </template>
 
 <style lang="scss" module>

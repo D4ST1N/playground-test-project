@@ -1,4 +1,5 @@
 import _ from "lodash";
+import { v4 as uuidv4 } from "uuid";
 import {
   colorMapping,
   emptyCell,
@@ -17,8 +18,10 @@ import {
   TetrisKeyCode,
 } from "@/helpers/games/tetris/types";
 import { brightenColor } from "@/helpers/generalHelpers";
-import { GameStatus, Coordinates, HexCode } from "@/helpers/generalTypes";
+import { GameStatus, Coordinates, HexCode, GameName } from "@/helpers/generalTypes";
 import { config } from "@/helpers/games/tetris/gameConfig";
+import { useScoreStore } from "@/store/score";
+import { useUserStore } from "@/store/user";
 
 export interface TetrisGame {
   canvas: HTMLCanvasElement;
@@ -48,8 +51,6 @@ export interface TetrisGame {
   moveFigureRight(): void;
   checkIntersections(figureCells: TetrisFieldCell[][], figurePosition: Coordinates): boolean;
   rotateClockwise(): void;
-  rotateCounterClockwise(): void;
-  rotateIfPossible(newFigureCells: TetrisFieldCell[][]): void;
   checkFilledRows(): void;
   updateScore({
     row,
@@ -92,6 +93,9 @@ class TetrisImplementation implements TetrisGame {
   fieldHeight: number;
   intervalId: number = 0;
   score: number = 0;
+  scoreStore;
+  userStore;
+  scoreId: string;
   boundedHandleMovement: (event: KeyboardEvent) => void;
 
   constructor({ canvas, nextFigureCanvas, scorePanelCanvas }: TetrisGamePayload) {
@@ -105,10 +109,47 @@ class TetrisImplementation implements TetrisGame {
     const [fieldColumn] = this.field;
     this.fieldHeight = fieldColumn.length;
 
+    this.scoreStore = useScoreStore();
+    this.userStore = useUserStore();
+    this.scoreId = uuidv4();
+    this.scoreStore.setCurrentGameId(this.scoreId);
+
     // to remove event listener we need to pass exact same function. When we use .bind on function
     // it returns new function, so we can't pass functionName.bind(this) to remove event listener
     // as this will not work. Save bound function will solve the issue
     this.boundedHandleMovement = this.handleMovement.bind(this);
+  }
+
+  get currentFigurePhantom() {
+    const { cells, coordinates } = this.currentFigure;
+    const figureHeight = cells[0].length;
+
+    const y = cells.reduce((minY, column, x) => {
+      const lastFilledCellIndex = column.findLastIndex((cell: TetrisFieldCell) => cell.isFilled);
+
+      if (lastFilledCellIndex === -1) return minY;
+
+      const cellX = this.currentFigure.coordinates.x + x;
+      const heightFromTheTop = coordinates.y + lastFilledCellIndex + 1;
+      let closestFilledCell = this.field[cellX]
+        .slice(heightFromTheTop)
+        .findIndex((cell: TetrisFieldCell) => cell.isFilled);
+
+      if (closestFilledCell === -1) return minY;
+
+      closestFilledCell += heightFromTheTop;
+      const cellY = closestFilledCell - (lastFilledCellIndex + 1);
+      if (cellY < minY) {
+        return cellY;
+      }
+
+      return minY;
+    }, this.fieldHeight - figureHeight);
+
+    return {
+      cells,
+      coordinates: { ...coordinates, y },
+    };
   }
 
   start() {
@@ -125,6 +166,7 @@ class TetrisImplementation implements TetrisGame {
   restart() {
     this.field = generateField(config.fieldWidth, config.fieldHeight);
     this.score = 0;
+    this.scoreId = uuidv4();
     this.start();
   }
 
@@ -210,26 +252,22 @@ class TetrisImplementation implements TetrisGame {
 
   handleMovement(e: KeyboardEvent) {
     switch (e.code) {
-      case TetrisKeyCode.Left: {
+      case TetrisKeyCode.Left:
+      case TetrisKeyCode.LeftArrow:
         this.moveFigureLeft();
         break;
-      }
-      case TetrisKeyCode.Right: {
+      case TetrisKeyCode.Right:
+      case TetrisKeyCode.RightArrow:
         this.moveFigureRight();
         break;
-      }
-      case TetrisKeyCode.Down: {
+      case TetrisKeyCode.Down:
+      case TetrisKeyCode.DownArrow:
         this.moveFigure();
         break;
-      }
-      case TetrisKeyCode.RotateCounterClockwise: {
-        this.rotateCounterClockwise();
-        break;
-      }
-      case TetrisKeyCode.RotateClockwise: {
+      case TetrisKeyCode.Rotate:
+      case TetrisKeyCode.RotateArrow:
         this.rotateClockwise();
         break;
-      }
       case TetrisKeyCode.Space: {
         this.togglePause();
         break;
@@ -238,6 +276,8 @@ class TetrisImplementation implements TetrisGame {
         return;
       }
     }
+
+    this.currentFigurePhantom;
   }
 
   togglePause() {
@@ -342,25 +382,6 @@ class TetrisImplementation implements TetrisGame {
       });
     });
 
-    this.rotateIfPossible(newFigureCells);
-  }
-
-  rotateCounterClockwise() {
-    if (this.status !== GameStatus.Playing) return;
-
-    const newFigureCells: TetrisFieldCell[][] = [];
-
-    this.currentFigure.cells.forEach((column, x, r) => {
-      column.forEach((cell, y) => {
-        newFigureCells[y] = newFigureCells[y] || [];
-        newFigureCells[y][r.length - x - 1] = cell;
-      });
-    });
-
-    this.rotateIfPossible(newFigureCells);
-  }
-
-  rotateIfPossible(newFigureCells: TetrisFieldCell[][]) {
     if (this.checkIntersections(newFigureCells, this.currentFigure.coordinates)) return;
 
     this.currentFigure = {
@@ -444,6 +465,7 @@ class TetrisImplementation implements TetrisGame {
     this.score += figureScore;
     this.score += rowsScore;
     this.renderScore(figureScore + rowsScore);
+    this.scoreStore.setScore(this.userStore.user!, GameName.Tetris, this.score, this.scoreId);
   }
 
   moveEmptyRowsDown() {
@@ -483,6 +505,18 @@ class TetrisImplementation implements TetrisGame {
     });
 
     if (this.currentFigure.coordinates.y >= 0) {
+      const { x: phantomX, y: phantomY } = this.currentFigurePhantom.coordinates;
+      this.currentFigurePhantom.cells.forEach((column, x) => {
+        column.forEach((cell, y) => {
+          if (!cell.isFilled) return;
+
+          this.renderPhantomCell({
+            x: x + phantomX,
+            y: y + phantomY,
+          });
+        });
+      });
+
       this.currentFigure.cells.forEach((column, x) => {
         column.forEach((cell, y) => {
           if (!cell.isFilled) return;
@@ -580,6 +614,18 @@ class TetrisImplementation implements TetrisGame {
     );
   }
 
+  renderPhantomCell({ x, y }: Coordinates) {
+    const lineWidth = this.cellSize / 12;
+    this.ctx.strokeStyle = "#fff5";
+    this.ctx.lineWidth = lineWidth;
+    this.ctx.strokeRect(
+      x * this.cellSize + lineWidth / 2,
+      y * this.cellSize + lineWidth / 2,
+      this.cellSize - lineWidth,
+      this.cellSize - lineWidth,
+    );
+  }
+
   renderEmptyCell({ x, y }: Coordinates) {
     this.ctx.strokeStyle = colorMapping[CellType.Empty];
     const lineWidth = this.cellSize / 12;
@@ -616,13 +662,14 @@ class TetrisImplementation implements TetrisGame {
       this.scorePanelCtx.canvas.height,
     );
     this.scorePanelCtx.font = "normal 36px Arial";
+    this.scorePanelCtx.textAlign = "right";
     this.scorePanelCtx.strokeStyle = "#fff";
-    this.scorePanelCtx.strokeText(`${this.score}`, 10, 30);
+    this.scorePanelCtx.strokeText(`${this.score}`, this.scorePanelCanvas.width, 30);
 
     if (addition) {
-      this.scorePanelCtx.font = "normal 28px Arial";
+      this.scorePanelCtx.font = "normal 24px Arial";
       this.scorePanelCtx.fillStyle = "#fff";
-      this.scorePanelCtx.fillText(`+${addition}`, 10, 74);
+      this.scorePanelCtx.fillText(`+${addition}`, this.scorePanelCanvas.width, 60);
     }
   }
 }

@@ -1,6 +1,4 @@
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <div :class="$style.nextFigurePanel">
@@ -16,5 +14,6 @@
   align-items: flex-start;
   gap: 10px;
   width: 200px;
+  min-height: 210px;
 }
 </style>
