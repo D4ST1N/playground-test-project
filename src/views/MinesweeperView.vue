@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Scene from "@/components/Games/Tetris/UI/Scene.vue";
+import Scene from "@/components/Games/Minesweeper/UI/Scene.vue";
 </script>
 
 <template>

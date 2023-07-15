@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "@/views/HomeView.vue";
 import TetrisView from "@/views/TetrisView.vue";
+import MinesweeperView from "@/views/MinesweeperView.vue";
 import NotFound from "@/views/NotFound.vue";
 
 const router = createRouter({
@@ -20,6 +21,11 @@ const router = createRouter({
       path: "/tetris",
       name: "tetris",
       component: TetrisView,
+    },
+    {
+      path: "/minesweeper",
+      name: "minesweeper",
+      component: MinesweeperView,
     },
   ],
 });

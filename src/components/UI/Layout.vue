@@ -14,10 +14,15 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: 16px;
+  padding: 12px;
   height: 100vh;
   min-height: 100vh;
-  background: linear-gradient(90deg, rgba(30, 136, 229, 1) 0%, rgba(100, 181, 246, 1) 35%, rgba(0, 212, 255, 1) 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(30, 136, 229, 1) 0%,
+    rgba(100, 181, 246, 1) 35%,
+    rgba(0, 212, 255, 1) 100%
+  );
 }
 
 .content {

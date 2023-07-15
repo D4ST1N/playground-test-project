@@ -49,7 +49,7 @@ export const games: GameInfo[] = [
     path: "minesweeper",
     description:
       "Minesweeper is a strategy puzzle game where players navigate a grid, uncovering hidden tiles while avoiding mines by using numerical hints provided by adjacent tiles.",
-    implemented: false,
+    implemented: true,
     cover: "/src/assets/img/cover/minesweeper.webp",
   },
   {

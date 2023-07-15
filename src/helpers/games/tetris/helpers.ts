@@ -7,7 +7,7 @@ import {
   TetrisFigureType,
   CellType,
 } from "./types";
-import { randomNumber } from "@/helpers/generalHelpers";
+import { randomInteger } from "@/helpers/generalHelpers";
 import { useTetrisStore } from "@/store/games/tetris";
 
 type ColorMapping = {
@@ -209,7 +209,7 @@ export function getRandomFigureType(): TetrisFigureType {
     );
   });
 
-  return typesArray[randomNumber(0, typesArray.length - 1)];
+  return typesArray[randomInteger(0, typesArray.length - 1)];
 }
 
 export function getRandomFigure(): TetrisFigure {
