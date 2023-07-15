@@ -10,6 +10,6 @@
 .field {
   display: flex;
   justify-content: center;
-  width: 450px;
+  width: 420px;
 }
 </style>

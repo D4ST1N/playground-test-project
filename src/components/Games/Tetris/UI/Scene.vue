@@ -58,7 +58,7 @@ function startGame() {
           class="elevation-4 mt-4"
         ></v-alert>
       </div>
-      <canvas v-show="gameStarted" ref="canvasRef" width="450" height="900" />
+      <canvas v-show="gameStarted" ref="canvasRef" width="420" height="840" />
     </Field>
     <div v-show="gameStarted" :class="$style.panel">
       <NextFigurePanel>
@@ -75,7 +75,7 @@ function startGame() {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: 20px;
+  padding: 10px;
   gap: 20px;
 }
 
