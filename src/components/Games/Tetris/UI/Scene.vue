@@ -6,6 +6,7 @@ import NextFigurePanel from "@/components/Games/Tetris/UI/NextFigurePanel.vue";
 import ScorePanel from "@/components/Games/Tetris/UI/ScorePanel.vue";
 import Description from "@/components/Games/Tetris/UI/Description.vue";
 import HighScore from "@/components/Games/Tetris/UI/HighScore.vue";
+import FiguresInformation from "./FiguresInformation.vue";
 import { useUserStore } from "@/store/user";
 import { storeToRefs } from "pinia";
 
@@ -57,13 +58,14 @@ function startGame() {
           class="elevation-4 mt-4"
         ></v-alert>
       </div>
-      <canvas v-show="gameStarted" ref="canvasRef" width="400" height="800" />
+      <canvas v-show="gameStarted" ref="canvasRef" width="450" height="900" />
     </Field>
     <div v-show="gameStarted" :class="$style.panel">
       <NextFigurePanel>
         <canvas ref="nextFigureCanvasRef" width="160" height="160" />
       </NextFigurePanel>
       <Description />
+      <FiguresInformation />
     </div>
   </div>
 </template>

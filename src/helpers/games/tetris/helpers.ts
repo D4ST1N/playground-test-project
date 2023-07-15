@@ -1,19 +1,26 @@
 import _ from "lodash";
 import { HexCode } from "@/helpers/generalTypes";
-import { TetrisFieldCell, TetrisFigure, TetrisGameField, TetrisFigureType, CellType } from "./types";
+import {
+  TetrisFieldCell,
+  TetrisFigure,
+  TetrisGameField,
+  TetrisFigureType,
+  CellType,
+} from "./types";
 import { randomNumber } from "@/helpers/generalHelpers";
+import { useTetrisStore } from "@/store/games/tetris";
 
 type ColorMapping = {
   [key in TetrisFigureType | CellType.Empty]: HexCode;
-}
+};
 
 type ScoreMapping = {
   [key in TetrisFigureType]: number;
-}
+};
 
 type FiguresMapping = {
   [key in TetrisFigureType]: TetrisFigure;
-}
+};
 
 export const colorMapping: ColorMapping = {
   [TetrisFigureType.I]: "#00f0f0",
@@ -34,7 +41,7 @@ export const figureScoreMapping: ScoreMapping = {
   [TetrisFigureType.S]: 3,
   [TetrisFigureType.T]: 2.5,
   [TetrisFigureType.Z]: 3,
-}
+};
 
 export const emptyCell: TetrisFieldCell = {
   color: colorMapping[CellType.Empty],
@@ -44,7 +51,12 @@ export const emptyCell: TetrisFieldCell = {
 export const figuresMapping: FiguresMapping = {
   [TetrisFigureType.I]: {
     cells: [
-      [{ color: colorMapping.I, isFilled: true }, { color: colorMapping.I, isFilled: true }, { color: colorMapping.I, isFilled: true }, { color: colorMapping.I, isFilled: true }],
+      [
+        { color: colorMapping.I, isFilled: true },
+        { color: colorMapping.I, isFilled: true },
+        { color: colorMapping.I, isFilled: true },
+        { color: colorMapping.I, isFilled: true },
+      ],
     ],
     coordinates: {
       x: 4,
@@ -54,8 +66,16 @@ export const figuresMapping: FiguresMapping = {
   },
   [TetrisFigureType.J]: {
     cells: [
-      [{ color: colorMapping.Empty, isFilled: false }, { color: colorMapping.Empty, isFilled: false }, { color: colorMapping.J, isFilled: true }],
-      [{ color: colorMapping.J, isFilled: true }, { color: colorMapping.J, isFilled: true }, { color: colorMapping.J, isFilled: true }],
+      [
+        { color: colorMapping.Empty, isFilled: false },
+        { color: colorMapping.Empty, isFilled: false },
+        { color: colorMapping.J, isFilled: true },
+      ],
+      [
+        { color: colorMapping.J, isFilled: true },
+        { color: colorMapping.J, isFilled: true },
+        { color: colorMapping.J, isFilled: true },
+      ],
     ],
     coordinates: {
       x: 4,
@@ -65,8 +85,16 @@ export const figuresMapping: FiguresMapping = {
   },
   [TetrisFigureType.L]: {
     cells: [
-      [{ color: colorMapping.L, isFilled: true }, { color: colorMapping.L, isFilled: true }, { color: colorMapping.L, isFilled: true }],
-      [{ color: colorMapping.Empty, isFilled: false }, { color: colorMapping.Empty, isFilled: false }, { color: colorMapping.L, isFilled: true }],
+      [
+        { color: colorMapping.L, isFilled: true },
+        { color: colorMapping.L, isFilled: true },
+        { color: colorMapping.L, isFilled: true },
+      ],
+      [
+        { color: colorMapping.Empty, isFilled: false },
+        { color: colorMapping.Empty, isFilled: false },
+        { color: colorMapping.L, isFilled: true },
+      ],
     ],
     coordinates: {
       x: 4,
@@ -76,8 +104,14 @@ export const figuresMapping: FiguresMapping = {
   },
   [TetrisFigureType.O]: {
     cells: [
-      [{ color: colorMapping.O, isFilled: true }, { color: colorMapping.O, isFilled: true }],
-      [{ color: colorMapping.O, isFilled: true }, { color: colorMapping.O, isFilled: true }],
+      [
+        { color: colorMapping.O, isFilled: true },
+        { color: colorMapping.O, isFilled: true },
+      ],
+      [
+        { color: colorMapping.O, isFilled: true },
+        { color: colorMapping.O, isFilled: true },
+      ],
     ],
     coordinates: {
       x: 4,
@@ -87,9 +121,18 @@ export const figuresMapping: FiguresMapping = {
   },
   [TetrisFigureType.S]: {
     cells: [
-      [{ color: colorMapping.Empty, isFilled: false }, { color: colorMapping.S, isFilled: true }],
-      [{ color: colorMapping.S, isFilled: true }, { color: colorMapping.S, isFilled: true }],
-      [{ color: colorMapping.S, isFilled: true }, { color: colorMapping.Empty, isFilled: false }],
+      [
+        { color: colorMapping.Empty, isFilled: false },
+        { color: colorMapping.S, isFilled: true },
+      ],
+      [
+        { color: colorMapping.S, isFilled: true },
+        { color: colorMapping.S, isFilled: true },
+      ],
+      [
+        { color: colorMapping.S, isFilled: true },
+        { color: colorMapping.Empty, isFilled: false },
+      ],
     ],
     coordinates: {
       x: 4,
@@ -99,9 +142,18 @@ export const figuresMapping: FiguresMapping = {
   },
   [TetrisFigureType.T]: {
     cells: [
-      [{ color: colorMapping.T, isFilled: true }, { color: colorMapping.Empty, isFilled: false }],
-      [{ color: colorMapping.T, isFilled: true }, { color: colorMapping.T, isFilled: true }],
-      [{ color: colorMapping.T, isFilled: true }, { color: colorMapping.Empty, isFilled: false }],
+      [
+        { color: colorMapping.T, isFilled: true },
+        { color: colorMapping.Empty, isFilled: false },
+      ],
+      [
+        { color: colorMapping.T, isFilled: true },
+        { color: colorMapping.T, isFilled: true },
+      ],
+      [
+        { color: colorMapping.T, isFilled: true },
+        { color: colorMapping.Empty, isFilled: false },
+      ],
     ],
     coordinates: {
       x: 4,
@@ -111,9 +163,18 @@ export const figuresMapping: FiguresMapping = {
   },
   [TetrisFigureType.Z]: {
     cells: [
-      [{ color: colorMapping.Z, isFilled: true }, { color: colorMapping.Empty, isFilled: false }],
-      [{ color: colorMapping.Z, isFilled: true }, { color: colorMapping.Z, isFilled: true }],
-      [{ color: colorMapping.Empty, isFilled: false }, { color: colorMapping.Z, isFilled: true }],
+      [
+        { color: colorMapping.Z, isFilled: true },
+        { color: colorMapping.Empty, isFilled: false },
+      ],
+      [
+        { color: colorMapping.Z, isFilled: true },
+        { color: colorMapping.Z, isFilled: true },
+      ],
+      [
+        { color: colorMapping.Empty, isFilled: false },
+        { color: colorMapping.Z, isFilled: true },
+      ],
     ],
     coordinates: {
       x: 4,
@@ -124,13 +185,31 @@ export const figuresMapping: FiguresMapping = {
 };
 
 export function generateField(width: number, height: number): TetrisGameField {
-  return Array(width).fill(null).map(() => Array(height).fill(null).map(() => ({ ...emptyCell })));
+  return Array(width)
+    .fill(null)
+    .map(() =>
+      Array(height)
+        .fill(null)
+        .map(() => ({ ...emptyCell })),
+    );
 }
 
 export function getRandomFigureType(): TetrisFigureType {
-  const figureIndex = randomNumber(0, Object.keys(TetrisFigureType).length - 1);
+  const tetrisStore = useTetrisStore();
+  const { numberOfFigures } = tetrisStore;
+  const maximalNumberOfFigures = Math.max(...Object.values(numberOfFigures));
+  const baseTypeCount = 10;
+  const typesArray: TetrisFigureType[] = [];
 
-  return Object.keys(TetrisFigureType)[figureIndex] as TetrisFigureType;
+  Object.entries(numberOfFigures).forEach(([type, count]) => {
+    typesArray.push(
+      ...Array(
+        baseTypeCount + Math.min(baseTypeCount * 3, (maximalNumberOfFigures - count) * 4),
+      ).fill(type),
+    );
+  });
+
+  return typesArray[randomNumber(0, typesArray.length - 1)];
 }
 
 export function getRandomFigure(): TetrisFigure {

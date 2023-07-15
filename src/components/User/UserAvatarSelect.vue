@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref } from "vue";
 
-const avatars = import.meta.glob('@/assets/avatars/*.png');
-const selectedAvatar = ref<string | null>(null);
+const props = defineProps<{
+  avatar?: string;
+}>();
+const avatars = import.meta.glob("@/assets/avatars/*.png");
+const selectedAvatar = ref<string | null>(props.avatar || null);
 const emit = defineEmits(["select-avatar"]);
 
 interface Avatar {
@@ -15,14 +18,17 @@ function selectAvatar(avatar: string) {
 }
 
 function getAvatarPath(avatar: Avatar) {
-  return avatar.name.replace('/public', '');
+  return avatar.name.replace("/public", "");
 }
 </script>
 
 <template>
   <div :class="$style.container">
-    <div v-for="avatar in avatars" :class="{ [$style.avatar]: true, [$style.selected]: avatar.name === selectedAvatar }"
-      @click="selectAvatar(avatar.name)">
+    <div
+      v-for="avatar in avatars"
+      :class="{ [$style.avatar]: true, [$style.selected]: avatar.name === selectedAvatar }"
+      @click="selectAvatar(avatar.name)"
+    >
       <img :src="getAvatarPath(avatar)" />
     </div>
   </div>
@@ -35,7 +41,7 @@ function getAvatarPath(avatar: Avatar) {
   flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
-  max-height: 170px;
+  max-height: 350px;
   overflow-y: auto;
 }
 
@@ -64,7 +70,7 @@ function getAvatarPath(avatar: Avatar) {
 }
 
 .caption {
-  font-size: .8rem;
-  opacity: .6;
+  font-size: 0.8rem;
+  opacity: 0.6;
 }
 </style>

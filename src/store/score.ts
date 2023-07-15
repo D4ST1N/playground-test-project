@@ -32,6 +32,7 @@ export const useScoreStore = defineStore(
       if (existedScore) {
         existedScore.score = gameScore;
         existedScore.date = new Date().toISOString();
+        existedScore.playerName = user.name;
       } else {
         gameScores.push({
           id: id || uuidv4(),

@@ -34,7 +34,7 @@ const controls: ControlInfo[] = [
 </script>
 
 <template>
-  <div class="mt-3">
+  <div>
     <h2>Controls:</h2>
     <ul :class="$style.list">
       <li v-for="control in controls" :key="control.name" :class="$style.item">
@@ -59,7 +59,7 @@ const controls: ControlInfo[] = [
 .key {
   border: 2px solid black;
   box-shadow: 2px 2px black;
-  font-size: 2rem;
+  font-size: 1.25rem;
   line-height: 0.85em;
   display: inline-block;
   font-weight: 600;

@@ -22,6 +22,7 @@ import { GameStatus, Coordinates, HexCode, GameName } from "@/helpers/generalTyp
 import { config } from "@/helpers/games/tetris/gameConfig";
 import { useScoreStore } from "@/store/score";
 import { useUserStore } from "@/store/user";
+import { useTetrisStore } from "@/store/games/tetris";
 
 export interface TetrisGame {
   canvas: HTMLCanvasElement;
@@ -95,6 +96,7 @@ class TetrisImplementation implements TetrisGame {
   score: number = 0;
   scoreStore;
   userStore;
+  tetrisStore;
   scoreId: string;
   boundedHandleMovement: (event: KeyboardEvent) => void;
 
@@ -111,6 +113,7 @@ class TetrisImplementation implements TetrisGame {
 
     this.scoreStore = useScoreStore();
     this.userStore = useUserStore();
+    this.tetrisStore = useTetrisStore();
     this.scoreId = uuidv4();
     this.scoreStore.setCurrentGameId(this.scoreId);
 
@@ -159,6 +162,7 @@ class TetrisImplementation implements TetrisGame {
     this.render();
     this.renderScore();
     this.renderNextFigure(figuresMapping[this.nextFigureType]);
+    this.tetrisStore.addNewFigure(this.currentFigure.type);
 
     this.startFigureMove();
   }
@@ -167,6 +171,8 @@ class TetrisImplementation implements TetrisGame {
     this.field = generateField(config.fieldWidth, config.fieldHeight);
     this.score = 0;
     this.scoreId = uuidv4();
+    this.scoreStore.setCurrentGameId(this.scoreId);
+    this.tetrisStore.reset();
     this.start();
   }
 
@@ -243,6 +249,8 @@ class TetrisImplementation implements TetrisGame {
 
     this.currentFigure = _.cloneDeep(figuresMapping[this.nextFigureType]);
     this.nextFigureType = getRandomFigureType();
+
+    this.tetrisStore.addNewFigure(this.currentFigure.type);
 
     this.currentFigure.coordinates.y = -1;
     this.checkFilledRows();
@@ -338,7 +346,7 @@ class TetrisImplementation implements TetrisGame {
     const figureHeight = figureColumn.length;
     const yWithOffset = figurePosition.y + figureHeight;
 
-    if (yWithOffset >= this.fieldHeight) {
+    if (yWithOffset > this.fieldHeight) {
       return true;
     }
 
@@ -573,16 +581,16 @@ class TetrisImplementation implements TetrisGame {
     );
   }
 
-  renderCell({ x, y }: Coordinates, color: HexCode, context: CanvasRenderingContext2D = this.ctx) {
-    const gradient = context.createLinearGradient(
-      x * this.cellSize,
-      y * this.cellSize,
-      x * this.cellSize,
-      (y + 1) * this.cellSize,
-    );
+  renderCell(
+    { x, y }: Coordinates,
+    color: HexCode,
+    context: CanvasRenderingContext2D = this.ctx,
+    size = this.cellSize,
+  ) {
+    const gradient = context.createLinearGradient(x * size, y * size, x * size, (y + 1) * size);
     const lighterColor = brightenColor(color, 20);
     const darkerColor = brightenColor(color, -20);
-    const lineWidth = this.cellSize / 12;
+    const lineWidth = size / 12;
     gradient.addColorStop(0, lighterColor);
     gradient.addColorStop(0.4, lighterColor);
     gradient.addColorStop(0.6, darkerColor);
@@ -590,28 +598,18 @@ class TetrisImplementation implements TetrisGame {
 
     context.fillStyle = gradient;
     context.strokeStyle = brightenColor(color, -40);
-    context.fillRect(x * this.cellSize, y * this.cellSize, this.cellSize, this.cellSize);
+    context.fillRect(x * size, y * size, size, size);
     context.lineWidth = lineWidth;
     context.strokeRect(
-      x * this.cellSize + lineWidth / 2,
-      y * this.cellSize + lineWidth / 2,
-      this.cellSize - lineWidth,
-      this.cellSize - lineWidth,
+      x * size + lineWidth / 2,
+      y * size + lineWidth / 2,
+      size - lineWidth,
+      size - lineWidth,
     );
     context.fillStyle = brightenColor(color, 40);
-    context.fillRect(
-      x * this.cellSize + this.cellSize / 4,
-      y * this.cellSize + this.cellSize / 4,
-      this.cellSize / 2,
-      this.cellSize / 2,
-    );
+    context.fillRect(x * size + size / 4, y * size + size / 4, size / 2, size / 2);
     context.fillStyle = brightenColor(color, 30);
-    context.fillRect(
-      x * this.cellSize + this.cellSize / 4 + 2,
-      y * this.cellSize + this.cellSize / 4 + 2,
-      this.cellSize / 2 - 4,
-      this.cellSize / 2 - 4,
-    );
+    context.fillRect(x * size + size / 4 + 2, y * size + size / 4 + 2, size / 2 - 4, size / 2 - 4);
   }
 
   renderPhantomCell({ x, y }: Coordinates) {
@@ -640,8 +638,8 @@ class TetrisImplementation implements TetrisGame {
 
   renderNextFigure(figure: TetrisFigure) {
     const [column] = figure.cells;
-    const width = figure.cells.length * this.cellSize;
-    const height = column.length * this.cellSize;
+    const width = (figure.cells.length * this.cellSize) / 2;
+    const height = (column.length * this.cellSize) / 2;
     this.nextFigureCtx.canvas.width = width;
     this.nextFigureCtx.canvas.height = height;
 
@@ -649,7 +647,7 @@ class TetrisImplementation implements TetrisGame {
       column.forEach((cell, y) => {
         if (!cell.isFilled) return;
 
-        this.renderCell({ x, y }, cell.color, this.nextFigureCtx);
+        this.renderCell({ x, y }, cell.color, this.nextFigureCtx, this.cellSize / 2);
       });
     });
   }

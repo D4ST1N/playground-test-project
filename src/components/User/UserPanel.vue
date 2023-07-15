@@ -23,7 +23,7 @@ function setUser(user: User) {
 
 <template>
   <div>
-    <UserProfile v-if="store.user" :user="store.user" />
+    <UserProfile v-if="store.user" :user="store.user" @change-user="openLoginModal" />
     <v-btn v-else @click="openLoginModal">Authenticate</v-btn>
     <UserAuth :showModal="showModal" @close-dialog="closeLoginModal" @submit-dialog="setUser" />
   </div>

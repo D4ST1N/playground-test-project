@@ -14,6 +14,6 @@
   align-items: flex-start;
   gap: 10px;
   width: 200px;
-  min-height: 210px;
+  height: 140px;
 }
 </style>

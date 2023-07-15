@@ -33,6 +33,10 @@ export enum TetrisKeyCode {
   Space = "Space",
 }
 
+export type NumberOfFigures = {
+  [key in TetrisFigureType]: number;
+};
+
 export enum CellType {
   Empty = "Empty",
 }
