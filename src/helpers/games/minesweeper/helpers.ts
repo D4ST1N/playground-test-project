@@ -1,12 +1,12 @@
 import _ from "lodash";
-import type {
-  GameFieldMeasures,
-  GameFieldOptions,
-  FieldCellCoordinates,
-  GameField,
-  FieldCell,
+import {
+  type GameFieldMeasures,
+  type GameFieldOptions,
+  type FieldCellCoordinates,
+  type GameField,
+  type FieldCell,
+  DefaultFieldSize,
 } from "@/helpers/games/minesweeper/types";
-import { FieldSize } from "@/helpers/games/minesweeper/types";
 import { defaultGameConfigurations, emptyCell } from "@/helpers/games/minesweeper/entities";
 import { randomNumbersInRange } from "@/helpers/generalHelpers";
 
@@ -86,7 +86,7 @@ export function getCellNeighbors(coordinates: FieldCellCoordinates, field: GameF
 }
 
 export function generateField(
-  fieldOptions: GameFieldOptions = defaultGameConfigurations[FieldSize.Small],
+  fieldOptions: GameFieldOptions = defaultGameConfigurations[DefaultFieldSize.Small],
 ): GameField {
   return Array(fieldOptions.width)
     .fill(null)

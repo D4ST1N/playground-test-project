@@ -52,3 +52,9 @@ export function randomNumbersInRange(
 
   return generatedNumbers;
 }
+
+export function formatTime(time: number) {
+  return `${Math.floor(time / 60)}:${(time % 60).toLocaleString("en-US", {
+    minimumIntegerDigits: 2,
+  })}`;
+}

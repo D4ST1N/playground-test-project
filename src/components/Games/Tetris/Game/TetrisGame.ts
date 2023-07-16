@@ -18,9 +18,8 @@ import {
   TetrisKeyCode,
 } from "@/helpers/games/tetris/types";
 import { brightenColor } from "@/helpers/generalHelpers";
-import { GameStatus, Coordinates, HexCode, GameName } from "@/helpers/generalTypes";
+import { GameStatus, Coordinates, HexCode } from "@/helpers/generalTypes";
 import { config } from "@/helpers/games/tetris/gameConfig";
-import { useScoreStore } from "@/store/score";
 import { useUserStore } from "@/store/user";
 import { useTetrisStore } from "@/store/games/tetris";
 
@@ -94,7 +93,6 @@ class TetrisImplementation implements TetrisGame {
   fieldHeight: number;
   intervalId: number = 0;
   score: number = 0;
-  scoreStore;
   userStore;
   tetrisStore;
   scoreId: string;
@@ -111,11 +109,10 @@ class TetrisImplementation implements TetrisGame {
     const [fieldColumn] = this.field;
     this.fieldHeight = fieldColumn.length;
 
-    this.scoreStore = useScoreStore();
     this.userStore = useUserStore();
     this.tetrisStore = useTetrisStore();
     this.scoreId = uuidv4();
-    this.scoreStore.setCurrentGameId(this.scoreId);
+    this.tetrisStore.setCurrentGameId(this.scoreId);
 
     // to remove event listener we need to pass exact same function. When we use .bind on function
     // it returns new function, so we can't pass functionName.bind(this) to remove event listener
@@ -171,7 +168,7 @@ class TetrisImplementation implements TetrisGame {
     this.field = generateField(config.fieldWidth, config.fieldHeight);
     this.score = 0;
     this.scoreId = uuidv4();
-    this.scoreStore.setCurrentGameId(this.scoreId);
+    this.tetrisStore.setCurrentGameId(this.scoreId);
     this.tetrisStore.reset();
     this.start();
   }
@@ -473,7 +470,7 @@ class TetrisImplementation implements TetrisGame {
     this.score += figureScore;
     this.score += rowsScore;
     this.renderScore(figureScore + rowsScore);
-    this.scoreStore.setScore(this.userStore.user!, GameName.Tetris, this.score, this.scoreId);
+    this.tetrisStore.setScore(this.score, this.scoreId);
   }
 
   moveEmptyRowsDown() {

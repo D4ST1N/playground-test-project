@@ -1,21 +1,15 @@
 <script setup lang="ts">
-import { GameName } from "@/helpers/generalTypes";
-import { useScoreStore } from "@/store/score";
-import { computed } from "vue";
 import { storeToRefs } from "pinia";
+import { useTetrisStore } from "@/store/games/tetris";
 
-const highScoresStore = useScoreStore();
-const { score, current } = storeToRefs(highScoresStore);
-const gameHighScores = computed(() => score.value[GameName.Tetris]);
+const tetrisStore = useTetrisStore();
+const { scores, current } = storeToRefs(tetrisStore);
 </script>
 
 <template>
   <div :class="$style.highScore">
     <h2>High Score</h2>
-    <div
-      v-for="score in gameHighScores"
-      :class="{ [$style.currentHighScore]: score.id === current }"
-    >
+    <div v-for="score in scores" :class="{ [$style.currentHighScore]: score.id === current }">
       <b>{{ score.playerName }}:&nbsp;</b>
       <span>{{ score.score }}</span>
     </div>

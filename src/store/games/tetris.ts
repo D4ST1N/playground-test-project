@@ -1,6 +1,9 @@
 import { NumberOfFigures, TetrisFigureType } from "@/helpers/games/tetris/types";
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import { v4 as uuidv4 } from "uuid";
+import { useUserStore } from "@/store/user";
+import { migrations } from "../migrations";
 
 const initialNumbers: NumberOfFigures = {
   [TetrisFigureType.I]: 0,
@@ -12,16 +15,90 @@ const initialNumbers: NumberOfFigures = {
   [TetrisFigureType.Z]: 0,
 };
 
-export const useTetrisStore = defineStore("tetris", () => {
-  const numberOfFigures = ref<NumberOfFigures>({ ...initialNumbers });
+export interface GameHighScore {
+  id: string;
+  score: number;
+  playerName: string;
+  date: string;
+}
 
-  function addNewFigure(figureType: TetrisFigureType) {
-    numberOfFigures.value[figureType] += 1;
+let initialScores: GameHighScore[] = [];
+if (APP_VERSION === "0.0.1") {
+  const oldScores = migrations[APP_VERSION]();
+
+  if (oldScores !== undefined) {
+    initialScores = oldScores;
   }
+}
 
-  function reset() {
-    numberOfFigures.value = { ...initialNumbers };
-  }
+export const useTetrisStore = defineStore(
+  "tetris",
+  () => {
+    const userStore = useUserStore();
+    const numberOfFigures = ref<NumberOfFigures>({ ...initialNumbers });
+    const scores = ref<GameHighScore[]>([]);
+    const current = ref<string>("");
 
-  return { numberOfFigures, addNewFigure, reset };
-});
+    function setCurrentGameId(currentId: string) {
+      current.value = currentId;
+    }
+
+    function setScore(gameScore: number, id: string) {
+      if (!userStore.user) return;
+
+      const existedScore = scores.value.find((score) => score.id === id);
+
+      if (existedScore) {
+        existedScore.score = gameScore;
+        existedScore.date = new Date().toISOString();
+        existedScore.playerName = userStore.user.name;
+      } else {
+        scores.value.push({
+          id: id || uuidv4(),
+          score: gameScore,
+          playerName: userStore.user.name,
+          date: new Date().toISOString(),
+        });
+      }
+
+      reduceScores();
+    }
+
+    function reduceScores() {
+      scores.value.sort((a, b) => b.score - a.score);
+      scores.value = scores.value.slice(0, 10);
+    }
+
+    function addNewFigure(figureType: TetrisFigureType) {
+      numberOfFigures.value[figureType] += 1;
+    }
+
+    function reset() {
+      numberOfFigures.value = { ...initialNumbers };
+    }
+
+    return {
+      numberOfFigures,
+      scores,
+      current,
+      setCurrentGameId,
+      setScore,
+      addNewFigure,
+      reset,
+      reduceScores,
+    };
+  },
+  {
+    persist: {
+      paths: ["scores"],
+      afterRestore: (ctx) => {
+        if (initialScores.length > 0) {
+          ctx.store.scores.push(...initialScores);
+          ctx.store.reduceScores();
+
+          localStorage.removeItem("score");
+        }
+      },
+    },
+  },
+);

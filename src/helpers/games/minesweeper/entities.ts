@@ -1,22 +1,22 @@
 import {
   type FieldCell,
   FieldCellLabel,
-  FieldSize,
   type GameConfigurations,
+  DefaultFieldSize,
 } from "@/helpers/games/minesweeper/types";
 
 export const defaultGameConfigurations: GameConfigurations = {
-  [FieldSize.Small]: {
+  [DefaultFieldSize.Small]: {
     width: 9,
     height: 9,
     numberOfMines: 10,
   },
-  [FieldSize.Medium]: {
+  [DefaultFieldSize.Medium]: {
     width: 16,
     height: 16,
     numberOfMines: 40,
   },
-  [FieldSize.Expert]: {
+  [DefaultFieldSize.Expert]: {
     width: 30,
     height: 16,
     numberOfMines: 99,

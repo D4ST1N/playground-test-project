@@ -18,14 +18,31 @@ export enum FieldCellLabel {
   Question = "Question",
 }
 
-export enum FieldSize {
+export enum DefaultFieldSize {
   Small = "Small",
   Medium = "Medium",
   Expert = "Expert",
 }
 
+export enum CustomFieldSize {
+  Custom = "Custom",
+}
+
+export type FieldSize = DefaultFieldSize | CustomFieldSize;
+
 export type GameConfigurations = {
-  [key in FieldSize]: GameFieldOptions;
+  [key in DefaultFieldSize]: GameFieldOptions;
+};
+
+export interface GameHighScore {
+  id: string;
+  time: number;
+  playerName: string;
+  date: string;
+}
+
+export type GameScores = {
+  [key in DefaultFieldSize]: GameHighScore[];
 };
 
 export interface FieldCell {
