@@ -281,8 +281,6 @@ class TetrisImplementation implements TetrisGame {
         return;
       }
     }
-
-    this.currentFigurePhantom;
   }
 
   togglePause() {

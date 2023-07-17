@@ -86,10 +86,10 @@ export const games: GameInfo[] = [
     id: uuidv4(),
     name: GameName.TwentyFortyEight,
     title: "2048",
-    path: "2048",
+    path: "twenty-forty-eight",
     description:
       "2048 is a addictive puzzle game where players combine numbered tiles by sliding them on a grid, aiming to reach the tile with the value of 2048.",
-    implemented: false,
+    implemented: true,
     cover: "/src/assets/img/cover/2048.webp",
   },
 ];

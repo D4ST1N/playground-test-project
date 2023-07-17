@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "@/views/HomeView.vue";
 import TetrisView from "@/views/TetrisView.vue";
 import MinesweeperView from "@/views/MinesweeperView.vue";
+import TwentyFortyEightView from "@/views/TwentyFortyEightView.vue";
 import NotFound from "@/views/NotFound.vue";
 
 const router = createRouter({
@@ -26,6 +27,11 @@ const router = createRouter({
       path: "/minesweeper",
       name: "minesweeper",
       component: MinesweeperView,
+    },
+    {
+      path: "/twenty-forty-eight",
+      name: "twenty-forty-eight",
+      component: TwentyFortyEightView,
     },
   ],
 });
