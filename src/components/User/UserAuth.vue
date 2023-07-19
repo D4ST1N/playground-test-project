@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { v4 as uuidv4 } from "uuid";
+
 import { User, useUserStore } from "@/store/user";
 import UserAvatarSelect from "@/components/User/UserAvatarSelect.vue";
 

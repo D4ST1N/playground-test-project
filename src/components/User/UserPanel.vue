@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { ref } from "vue";
+
 import { User, useUserStore } from "@/store/user";
 import UserAuth from "@/components/User/UserAuth.vue";
-import UserProfile from "./UserProfile.vue";
+import UserProfile from "@/components/User/UserProfile.vue";
 
 const store = useUserStore();
 const showModal = ref(false);

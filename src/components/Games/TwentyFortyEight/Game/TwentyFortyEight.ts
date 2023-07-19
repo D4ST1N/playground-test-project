@@ -2,14 +2,18 @@ import { v4 as uuidv4 } from "uuid";
 
 import { IGameConfig, config as gameConfig } from "@/helpers/games/twentyFortyEight/gameConfig";
 import {
+  buildMovementGuideline,
+  getCellContent,
+  getCoordinatesByDirection,
   getEmptyField,
+  getFarthestPosition,
   getRandomFreeCellCoordinates,
   getRandomTileValue,
   getTileColor,
   getTileFontSize,
   getTileTextColor,
   isCustomConfig,
-  moveTile,
+  isSamePosition,
 } from "@/helpers/games/twentyFortyEight/helpers";
 import {
   Direction,
@@ -95,51 +99,69 @@ export class TwentyFortyEight {
   }
 
   async moveTilesLeft() {
-    this.addTileIfAnyMove(
-      moveTile(
-        this.field,
-        Direction.Left,
-        this.config,
-        this.updateScore.bind(this),
-        this.setIsWin.bind(this),
-      ),
-    );
+    this.addTileIfAnyMove(this.moveTile(Direction.Left));
   }
 
   async moveTilesRight() {
-    this.addTileIfAnyMove(
-      moveTile(
-        this.field,
-        Direction.Right,
-        this.config,
-        this.updateScore.bind(this),
-        this.setIsWin.bind(this),
-      ),
-    );
+    this.addTileIfAnyMove(this.moveTile(Direction.Right));
   }
 
   moveTilesDown() {
-    this.addTileIfAnyMove(
-      moveTile(
-        this.field,
-        Direction.Down,
-        this.config,
-        this.updateScore.bind(this),
-        this.setIsWin.bind(this),
-      ),
-    );
+    this.addTileIfAnyMove(this.moveTile(Direction.Down));
   }
 
   moveTilesUp() {
-    this.addTileIfAnyMove(
-      moveTile(
-        this.field,
-        Direction.Up,
-        this.config,
-        this.updateScore.bind(this),
-        this.setIsWin.bind(this),
-      ),
-    );
+    this.addTileIfAnyMove(this.moveTile(Direction.Up));
+  }
+
+  moveTile(direction: Direction): boolean {
+    const movementCoordinates = getCoordinatesByDirection(direction);
+    const movementGuideline = buildMovementGuideline(movementCoordinates, this.config);
+    let anyMove = false;
+
+    movementGuideline.x.forEach((x) => {
+      movementGuideline.y.forEach((y) => {
+        const currentCell = { x, y };
+        const currentTile = getCellContent(this.field, currentCell, this.config);
+
+        if (!currentTile) return;
+
+        const { farthestPosition, nextPosition } = getFarthestPosition(
+          this.field,
+          currentCell,
+          movementCoordinates,
+          this.config,
+        );
+        const nextTile = getCellContent(this.field, nextPosition, this.config);
+
+        if (nextTile && nextTile.value === currentTile.value && !nextTile.isMerged) {
+          const newPosition = { ...nextPosition };
+
+          currentTile.merge();
+          currentTile.value *= 2;
+          this.field[currentCell.x][currentCell.y] = null;
+          this.field[newPosition.x][newPosition.y] = currentTile;
+
+          currentTile.move(newPosition);
+          this.updateScore(currentTile.value);
+
+          if (currentTile.value === this.config.winValue) {
+            this.setIsWin();
+          }
+        } else {
+          this.field[currentCell.x][currentCell.y] = null;
+          this.field[farthestPosition.x][farthestPosition.y] = currentTile;
+
+          currentTile.move(farthestPosition);
+        }
+
+        if (!isSamePosition(currentCell, currentTile.nextPosition!)) {
+          anyMove = true;
+        }
+      });
+    });
+
+    return anyMove;
   }
 
   updateScore(score: number) {

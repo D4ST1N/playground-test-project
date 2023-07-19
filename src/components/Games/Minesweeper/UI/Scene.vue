@@ -1,12 +1,13 @@
 <script setup lang="ts">
+import { computed } from "vue";
+
 import { useMinesweeperStore } from "@/store/games/minesweeper";
 import Field from "@/components/Games/Minesweeper/Game/Field.vue";
 import InfoPanel from "@/components/Games/Minesweeper/UI/InfoPanel.vue";
-import NewGameStart from "./NewGameStart.vue";
-import Notifications from "./Notifications.vue";
-import HighScorePanel from "./HighScorePanel.vue";
+import NewGameStart from "@/components/Games/Minesweeper/UI/NewGameStart.vue";
+import Notifications from "@/components/Games/Minesweeper/UI/Notifications.vue";
+import HighScorePanel from "@/components/Games/Minesweeper/UI/HighScorePanel.vue";
 import { DefaultFieldSize } from "@/helpers/games/minesweeper/types";
-import { computed } from "vue";
 
 const store = useMinesweeperStore();
 

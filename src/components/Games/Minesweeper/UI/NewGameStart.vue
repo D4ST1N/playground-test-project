@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
+import { ref } from "vue";
+
 import { defaultGameConfigurations } from "@/helpers/games/minesweeper/entities";
 import {
   DefaultFieldSize,
@@ -7,9 +10,7 @@ import {
 } from "@/helpers/games/minesweeper/types";
 import { useMinesweeperStore } from "@/store/games/minesweeper";
 import { useUserStore } from "@/store/user";
-import { storeToRefs } from "pinia";
-import { ref } from "vue";
-import SelectCustomSizeModal from "./SelectCustomSizeModal.vue";
+import SelectCustomSizeModal from "@/components/Games/Minesweeper/UI/SelectCustomSizeModal.vue";
 
 const userStore = useUserStore();
 const store = useMinesweeperStore();

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useCssModule, computed } from "vue";
+
 import { type FieldCell, FieldCellLabel } from "@/helpers/games/minesweeper/types";
 
 const props = defineProps<{

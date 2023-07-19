@@ -1,9 +1,10 @@
-import { NumberOfFigures, TetrisFigureType } from "@/helpers/games/tetris/types";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { v4 as uuidv4 } from "uuid";
+
+import { NumberOfFigures, TetrisFigureType } from "@/helpers/games/tetris/types";
 import { useUserStore } from "@/store/user";
-import { migrations } from "../migrations";
+import { migrations } from "@/store/migrations";
 
 const initialNumbers: NumberOfFigures = {
   [TetrisFigureType.I]: 0,

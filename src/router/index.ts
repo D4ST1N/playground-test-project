@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+
 import HomeView from "@/views/HomeView.vue";
 import TetrisView from "@/views/TetrisView.vue";
 import MinesweeperView from "@/views/MinesweeperView.vue";

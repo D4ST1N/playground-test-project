@@ -1,4 +1,5 @@
 import _ from "lodash";
+
 import { HexCode } from "@/helpers/generalTypes";
 import {
   TetrisFieldCell,
@@ -6,7 +7,7 @@ import {
   TetrisGameField,
   TetrisFigureType,
   CellType,
-} from "./types";
+} from "@/helpers/games/tetris/types";
 import { randomInteger } from "@/helpers/generalHelpers";
 import { useTetrisStore } from "@/store/games/tetris";
 

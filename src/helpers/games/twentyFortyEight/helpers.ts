@@ -113,62 +113,6 @@ export function getTileFontSize(value: number, config: IGameConfig): number {
   }
 }
 
-export function moveTile(
-  field: GameField,
-  direction: Direction,
-  config: IGameConfig,
-  updateScore: (score: number) => void,
-  setIsWin: () => void,
-): boolean {
-  const movementCoordinates = getCoordinatesByDirection(direction);
-  const movementGuideline = buildMovementGuideline(movementCoordinates, config);
-  let anyMove = false;
-
-  movementGuideline.x.forEach((x) => {
-    movementGuideline.y.forEach((y) => {
-      const currentCell = { x, y };
-      const currentTile = getCellContent(field, currentCell, config);
-
-      if (!currentTile) return;
-
-      const { farthestPosition, nextPosition } = getFarthestPosition(
-        field,
-        currentCell,
-        movementCoordinates,
-        config,
-      );
-      const nextTile = getCellContent(field, nextPosition, config);
-
-      if (nextTile && nextTile.value === currentTile.value && !nextTile.isMerged) {
-        const newPosition = { ...nextPosition };
-
-        currentTile.merge();
-        currentTile.value *= 2;
-        field[currentCell.x][currentCell.y] = null;
-        field[newPosition.x][newPosition.y] = currentTile;
-
-        currentTile.move(newPosition);
-        updateScore(currentTile.value);
-
-        if (currentTile.value === config.winValue) {
-          setIsWin();
-        }
-      } else {
-        field[currentCell.x][currentCell.y] = null;
-        field[farthestPosition.x][farthestPosition.y] = currentTile;
-
-        currentTile.move(farthestPosition);
-      }
-
-      if (!isSamePosition(currentCell, currentTile.nextPosition!)) {
-        anyMove = true;
-      }
-    });
-  });
-
-  return anyMove;
-}
-
 export function getCoordinatesByDirection(direction: Direction): Coordinates {
   return {
     [Direction.Left]: { x: -1, y: 0 },

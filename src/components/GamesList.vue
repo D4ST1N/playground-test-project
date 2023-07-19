@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
+
 import { games } from "@/helpers/staticData";
 import { GameInfo } from "@/helpers/generalTypes";
 import GameInfoBlock from "@/components/GameInfoBlock.vue";

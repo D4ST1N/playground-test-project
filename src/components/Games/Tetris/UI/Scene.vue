@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import { createTetrisGame, TetrisGame } from "../Game/TetrisGame";
+import { storeToRefs } from "pinia";
+
+import { createTetrisGame, TetrisGame } from "@/components/Games/Tetris/Game/TetrisGame";
 import Field from "@/components/Games/Tetris/UI/Field.vue";
 import NextFigurePanel from "@/components/Games/Tetris/UI/NextFigurePanel.vue";
 import ScorePanel from "@/components/Games/Tetris/UI/ScorePanel.vue";
 import Description from "@/components/Games/Tetris/UI/Description.vue";
 import HighScore from "@/components/Games/Tetris/UI/HighScore.vue";
-import FiguresInformation from "./FiguresInformation.vue";
+import FiguresInformation from "@/components/Games/Tetris/UI/FiguresInformation.vue";
 import { useUserStore } from "@/store/user";
-import { storeToRefs } from "pinia";
 
 const userStore = useUserStore();
 const { user } = storeToRefs(userStore);

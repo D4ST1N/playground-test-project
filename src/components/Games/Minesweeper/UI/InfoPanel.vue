@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
+
 import { useMinesweeperStore } from "@/store/games/minesweeper";
 
 const store = useMinesweeperStore();

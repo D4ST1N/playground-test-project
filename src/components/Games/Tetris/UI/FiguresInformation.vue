@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { useTetrisStore } from "@/store/games/tetris";
 import { storeToRefs } from "pinia";
+
+import { useTetrisStore } from "@/store/games/tetris";
 
 const tetrisStore = useTetrisStore();
 const { numberOfFigures } = storeToRefs(tetrisStore);

@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { GameFieldOptions } from "@/helpers/games/minesweeper/types";
 import { computed, ref } from "vue";
+
+import { GameFieldOptions } from "@/helpers/games/minesweeper/types";
 
 const props = defineProps<{
   showModal: boolean;

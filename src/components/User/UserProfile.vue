@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { User, useUserStore } from "@/store/user";
-import UserLogoutConfirmation from "./UserLogoutConfirmation.vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+
+import { User, useUserStore } from "@/store/user";
+import UserLogoutConfirmation from "./UserLogoutConfirmation.vue";
 
 interface menuItem {
   name: string;

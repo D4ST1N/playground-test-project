@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { useMinesweeperStore } from "@/store/games/minesweeper";
 import { computed } from "vue";
+
+import { useMinesweeperStore } from "@/store/games/minesweeper";
 import { formatTime } from "@/helpers/generalHelpers";
 import { DefaultFieldSize } from "@/helpers/games/minesweeper/types";
 

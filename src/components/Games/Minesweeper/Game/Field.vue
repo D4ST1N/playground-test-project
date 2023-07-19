@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useMinesweeperStore } from "@/store/games/minesweeper";
-import FieldCell from "./FieldCell.vue";
+import FieldCell from "@/components/Games/Minesweeper/Game/FieldCell.vue";
 import type { FieldCellCoordinates } from "@/helpers/games/minesweeper/types";
 
 const store = useMinesweeperStore();

@@ -1,7 +1,7 @@
-import { computed, ref } from "vue";
-import type { Ref } from "vue";
+import { computed, ref, type Ref } from "vue";
 import { defineStore } from "pinia";
 import { v4 as uuidv4 } from "uuid";
+
 import {
   generateField,
   populateField,

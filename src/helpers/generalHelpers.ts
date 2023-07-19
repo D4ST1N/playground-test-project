@@ -1,4 +1,4 @@
-import { HexCode } from "./generalTypes";
+import { HexCode } from "@/helpers/generalTypes";
 
 export function brightenColor(color: HexCode, percent: number) {
   let R = parseInt(color.substring(1, 3), 16);

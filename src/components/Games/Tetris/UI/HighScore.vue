@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
+
 import { useTetrisStore } from "@/store/games/tetris";
 
 const tetrisStore = useTetrisStore();
