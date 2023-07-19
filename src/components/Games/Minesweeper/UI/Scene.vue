@@ -8,6 +8,8 @@ import NewGameStart from "@/components/Games/Minesweeper/UI/NewGameStart.vue";
 import Notifications from "@/components/Games/Minesweeper/UI/Notifications.vue";
 import HighScorePanel from "@/components/Games/Minesweeper/UI/HighScorePanel.vue";
 import { DefaultFieldSize } from "@/helpers/games/minesweeper/types";
+import { GameStatus } from "@/helpers/generalTypes";
+import Confetti from "@/components/UI/Confetti.vue";
 
 const store = useMinesweeperStore();
 
@@ -28,6 +30,7 @@ const isDefaultFieldSize = computed(() => store.sizeSelected in DefaultFieldSize
     <NewGameStart v-else />
   </div>
   <Notifications />
+  <Confetti v-if="store.status === GameStatus.Victory" />
 </template>
 
 <style lang="scss" module>
@@ -44,5 +47,18 @@ const isDefaultFieldSize = computed(() => store.sizeSelected in DefaultFieldSize
 
 .highScoreWrapper {
   margin-top: 53px;
+}
+
+.confettiContainer {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  padding-top: 200px;
 }
 </style>

@@ -54,6 +54,10 @@ export const useTwentyFortyEightStore = defineStore(
       reduceScores();
     }
 
+    function clearScore() {
+      currentScore.value = 0;
+    }
+
     function reduceScores() {
       scores.value.sort((a, b) => b.score - a.score);
       scores.value = scores.value.slice(0, 10);
@@ -67,6 +71,7 @@ export const useTwentyFortyEightStore = defineStore(
       updateStatus,
       setCurrentGameId,
       setScore,
+      clearScore,
       reduceScores,
     };
   },

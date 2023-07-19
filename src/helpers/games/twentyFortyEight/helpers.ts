@@ -23,6 +23,14 @@ export function getEmptyField(width: number, height: number): GameField {
 }
 
 export function getRandomFreeCellCoordinates(field: GameField): Coordinates {
+  const freeCellsCoordinates = getFreeCells(field);
+  const randomIndex = randomInteger(0, freeCellsCoordinates.length - 1);
+  const position = freeCellsCoordinates[randomIndex];
+
+  return position;
+}
+
+export function getFreeCells(field: GameField): Coordinates[] {
   const freeCellsCoordinates: Coordinates[] = [];
 
   // loop through the field and find all free cells
@@ -34,9 +42,7 @@ export function getRandomFreeCellCoordinates(field: GameField): Coordinates {
     });
   });
 
-  const randomIndex = randomInteger(0, freeCellsCoordinates.length - 1);
-  const position = freeCellsCoordinates[randomIndex];
-  return position;
+  return freeCellsCoordinates;
 }
 
 export function getCoordinates(position: Coordinates, config: IGameConfig): Coordinates {
@@ -197,4 +203,29 @@ export function getFarthestPosition(
 
 export function isSamePosition(firstPosition: Coordinates, secondPosition: Coordinates): boolean {
   return firstPosition.x === secondPosition.x && firstPosition.y === secondPosition.y;
+}
+
+export function isMergeAvailable(field: GameField, config: IGameConfig): boolean {
+  let tile: Tile | null;
+
+  for (let x = 0; x < config.fieldSize; x++) {
+    for (let y = 0; y < config.fieldSize; y++) {
+      tile = getCellContent(field, { x: x, y: y }, config);
+
+      if (!tile) continue;
+
+      for (let direction in Direction) {
+        const movementCoordinates = getCoordinatesByDirection(direction as Direction);
+        const neighborCell = { x: x + movementCoordinates.x, y: y + movementCoordinates.y };
+        const neighborTile = getCellContent(field, neighborCell, config);
+
+        if (neighborTile && neighborTile.value === tile.value) {
+          // tiles can be merged
+          return true;
+        }
+      }
+    }
+  }
+
+  return false;
 }

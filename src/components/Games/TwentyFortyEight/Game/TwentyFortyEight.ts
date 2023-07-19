@@ -14,6 +14,8 @@ import {
   getTileTextColor,
   isCustomConfig,
   isSamePosition,
+  isMergeAvailable,
+  getFreeCells,
 } from "@/helpers/games/twentyFortyEight/helpers";
 import {
   Direction,
@@ -52,6 +54,15 @@ export class TwentyFortyEight {
     this.render();
 
     window.addEventListener("keydown", this.handleMovement.bind(this));
+  }
+
+  restart() {
+    this.scoreId = uuidv4();
+    this.gameStore.setCurrentGameId(this.scoreId);
+    this.gameStore.updateStatus(GameStatus.Playing);
+    this.gameStore.clearScore();
+    this.field = getEmptyField(this.config.fieldSize, this.config.fieldSize);
+    this.addInitialTiles();
   }
 
   addInitialTiles() {
@@ -177,6 +188,13 @@ export class TwentyFortyEight {
 
     await timeout(this.config.moveAnimationTime * 1.1);
     this.addNewTile();
+
+    const mergeAvailable = isMergeAvailable(this.field, this.config);
+    const freeCells = getFreeCells(this.field);
+
+    if (!mergeAvailable && !freeCells.length) {
+      this.gameStore.updateStatus(GameStatus.Defeat);
+    }
   }
 
   render() {

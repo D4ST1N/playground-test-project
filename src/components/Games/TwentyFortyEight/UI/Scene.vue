@@ -9,27 +9,40 @@ import GameScore from "@/components/Games/TwentyFortyEight/UI/GameScore.vue";
 import HighScore from "@/components/Games/TwentyFortyEight/UI/HighScore.vue";
 import { useTwentyFortyEightStore } from "@/store/games/twentyFortyEight";
 import { GameStatus } from "@/helpers/generalTypes";
+import Confetti from "@/components/UI/Confetti.vue";
+import Notifications from "@/components/Games/TwentyFortyEight/UI/Notifications.vue";
 
 const gameStore = useTwentyFortyEightStore();
 const { status } = storeToRefs(gameStore);
 const canvasRef = ref<HTMLCanvasElement | null>(null);
 
-const gameStarted = computed(() => status.value === GameStatus.Playing);
+const gameStarted = computed(() => status.value !== GameStatus.NotStarted);
+let game = null as null | TwentyFortyEight;
 
 function startGame() {
-  const canvas = canvasRef.value;
-  if (!canvas) return;
-
-  const game = new TwentyFortyEight(canvas);
-  game.start();
+  start(null);
 }
 
 function startCustomGame(config: Partial<IGameConfig>) {
+  start(config);
+}
+
+function start(config: Partial<IGameConfig> | null) {
   const canvas = canvasRef.value;
   if (!canvas) return;
 
-  const game = new TwentyFortyEight(canvas, config);
+  if (!game) {
+    game = new TwentyFortyEight(canvas, config || {});
+  }
   game.start();
+}
+
+function restartGame() {
+  game?.restart();
+}
+
+function continuePlaying() {
+  gameStore.updateStatus(GameStatus.Playing);
 }
 </script>
 
@@ -44,6 +57,8 @@ function startCustomGame(config: Partial<IGameConfig>) {
       <HighScore />
     </div>
   </div>
+  <Notifications @start-new-game="restartGame" @continue-playing="continuePlaying" />
+  <Confetti v-if="gameStore.status === GameStatus.Victory" />
 </template>
 
 <style lang="scss" module>
