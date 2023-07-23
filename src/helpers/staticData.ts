@@ -70,7 +70,7 @@ export const games: GameInfo[] = [
     path: "sudoku",
     description:
       "Sudoku is a popular number puzzle game where players fill a grid with digits, ensuring that each row, column, and subgrid contains all the numbers from 1 to 9 without repetition.",
-    implemented: false,
+    implemented: true,
     cover: "/src/assets/img/cover/sudoku.avif",
   },
   {
