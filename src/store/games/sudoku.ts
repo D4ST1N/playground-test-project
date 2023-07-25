@@ -6,18 +6,54 @@ import {
   GameDifficulty,
   GameField,
   GameScores,
+  SudokuArea,
   SudokuSolverResult,
 } from "@/helpers/games/sudoku/types";
 import { GameStatus } from "@/helpers/generalTypes";
 import { useUserStore } from "@/store/user";
-import { formatTime } from "@/helpers/generalHelpers";
+import { formatTime, soundFabric } from "@/helpers/generalHelpers";
 import { SudokuSolver } from "@/components/Games/Sudoku/Game/SudokuSolver";
-import { generateBoard, getSudokuDifficulty } from "@/helpers/games/sudoku/helpers";
+import {
+  generateAreas,
+  generateBoard,
+  getRandomBoard,
+  getSudokuDifficulty,
+  shuffleBoard,
+} from "@/helpers/games/sudoku/helpers";
 import _ from "lodash";
 
 interface DigitsCount {
   [key: number]: number;
 }
+
+const gameAudios = soundFabric([
+  {
+    key: "win",
+    sound: "/src/assets/sounds/games/sudoku/win.mp3",
+    volume: 0.6,
+  },
+  {
+    key: "filled",
+    sound: "/src/assets/sounds/games/sudoku/filled.mp3",
+    volume: 0.3,
+  },
+  {
+    key: "fail",
+    sound: "/src/assets/sounds/games/sudoku/fail.mp3",
+    volume: 1,
+  },
+  {
+    key: "clear",
+    sound: "/src/assets/sounds/games/sudoku/clear.mp3",
+    volume: 1,
+  },
+  {
+    key: "theme",
+    sound: "/src/assets/sounds/games/sudoku/theme.mp3",
+    loop: true,
+    volume: 0.3,
+  },
+]);
 
 export const useSudokuStore = defineStore(
   "sudoku",
@@ -28,6 +64,7 @@ export const useSudokuStore = defineStore(
       [GameDifficulty.Easy]: [],
       [GameDifficulty.Medium]: [],
       [GameDifficulty.Hard]: [],
+      [GameDifficulty.Expert]: [],
     });
     const timer = ref(0);
     const gameField: Ref<GameField> = ref([]);
@@ -36,6 +73,8 @@ export const useSudokuStore = defineStore(
     const sudokuSolver = new SudokuSolver();
     const currentDifficulty: Ref<GameDifficulty | null> = ref(null);
     const errorsCount: Ref<number> = ref(0);
+    const areas = ref<SudokuArea[]>([]);
+
     let timerId: number | null = null;
 
     const time = computed(() => formatTime(timer.value));
@@ -63,24 +102,33 @@ export const useSudokuStore = defineStore(
       let randomSudoku: GameField;
       let difficulty: GameDifficulty | null;
 
-      do {
-        randomSudoku = generateBoard(gameDifficulty);
-        result = sudokuSolver.solve(randomSudoku);
+      if (gameDifficulty !== GameDifficulty.Expert) {
+        do {
+          randomSudoku = generateBoard(gameDifficulty);
+          result = sudokuSolver.solve(randomSudoku);
 
-        if (result.result) {
-          difficulty = getSudokuDifficulty(result);
-        } else {
-          difficulty = null;
-        }
-      } while (!result.result || difficulty !== gameDifficulty);
+          if (result.result) {
+            difficulty = getSudokuDifficulty(result);
+          } else {
+            difficulty = null;
+          }
+        } while (!result.result || difficulty !== gameDifficulty);
+
+        solvedGameField.value = result.board;
+      } else {
+        randomSudoku = shuffleBoard(getRandomBoard(), 25);
+        solvedGameField.value = [...randomSudoku];
+        randomSudoku = randomSudoku.map(() => 0);
+      }
 
       gameField.value = randomSudoku;
       initialGameField.value = [...randomSudoku];
-      solvedGameField.value = result.board;
       currentDifficulty.value = gameDifficulty;
+      areas.value = generateAreas(solvedGameField.value);
       timer.value = 0;
       errorsCount.value = 0;
       status.value = GameStatus.Playing;
+      gameAudios.theme.play();
 
       startTimer();
     }
@@ -117,12 +165,22 @@ export const useSudokuStore = defineStore(
     function setCell(cellIndex: number, value: number) {
       gameField.value[cellIndex] = value;
 
+      if (value === 0) {
+        gameAudios.clear.playMultiple();
+      }
+
       if (value !== 0 && solvedGameField.value[cellIndex] !== value) {
         errorsCount.value += 1;
+        gameAudios.fail.playMultiple();
+      }
+
+      if (value !== 0 && solvedGameField.value[cellIndex] === value) {
+        gameAudios.filled.playMultiple();
       }
 
       if (_.isEqual(gameField.value, solvedGameField.value)) {
         winGame();
+        gameAudios.win.play();
       }
     }
 
@@ -170,6 +228,7 @@ export const useSudokuStore = defineStore(
       solvedGameField,
       currentDifficulty,
       errorsCount,
+      areas,
       startNewGame,
       solve,
       updateField,

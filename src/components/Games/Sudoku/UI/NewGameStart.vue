@@ -31,6 +31,9 @@ function startGame(difficulty: GameDifficulty) {
     <v-btn :disabled="!user" color="error" @click="() => startGame(GameDifficulty.Hard)">
       Hard
     </v-btn>
+    <v-btn :disabled="!user" color="red-darken-4" @click="() => startGame(GameDifficulty.Expert)">
+      Expert
+    </v-btn>
   </div>
 </template>
 

@@ -42,3 +42,9 @@ export enum CellType {
 }
 
 export type TetrisGameField = TetrisFieldCell[][];
+
+export enum TetrisGameDIfficulty {
+  Easy = "Easy",
+  Medium = "Medium",
+  Hard = "Hard",
+}

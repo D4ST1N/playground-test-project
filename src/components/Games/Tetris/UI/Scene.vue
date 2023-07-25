@@ -10,9 +10,12 @@ import Description from "@/components/Games/Tetris/UI/Description.vue";
 import HighScore from "@/components/Games/Tetris/UI/HighScore.vue";
 import FiguresInformation from "@/components/Games/Tetris/UI/FiguresInformation.vue";
 import { useUserStore } from "@/store/user";
+import { useTetrisStore } from "@/store/games/tetris";
 
 const userStore = useUserStore();
+const tetrisStore = useTetrisStore();
 const { user } = storeToRefs(userStore);
+const { musicStopped } = storeToRefs(tetrisStore);
 const canvasRef = ref<HTMLCanvasElement | null>(null);
 const nextFigureCanvasRef = ref<HTMLCanvasElement | null>(null);
 const scorePanelCanvasRef = ref<HTMLCanvasElement | null>(null);
@@ -39,6 +42,14 @@ function startGame() {
   gameStarted.value = true;
   Game.start();
 }
+
+function toggleMusic() {
+  if (musicStopped.value) {
+    tetrisStore.startMusic();
+  } else {
+    tetrisStore.stopMusic();
+  }
+}
 </script>
 
 <template>
@@ -47,6 +58,15 @@ function startGame() {
       <ScorePanel>
         <canvas ref="scorePanelCanvasRef" width="500" height="80" />
       </ScorePanel>
+
+      <v-btn color="teal-darken-4" class="mb-5" @click="toggleMusic">
+        <template v-slot:prepend>
+          <v-icon v-if="musicStopped" icon="mdi-music" />
+          <v-icon v-else icon="mdi-music-off" />
+        </template>
+        {{ musicStopped ? "Play music" : "Stop music" }}
+      </v-btn>
+
       <HighScore />
     </div>
     <Field>

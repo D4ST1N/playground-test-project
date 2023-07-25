@@ -1,4 +1,10 @@
-import { GameDifficulty, GameField, SudokuSolverSuccessResult } from "@/helpers/games/sudoku/types";
+import {
+  CellAreaCells,
+  GameDifficulty,
+  GameField,
+  SudokuArea,
+  SudokuSolverSuccessResult,
+} from "@/helpers/games/sudoku/types";
 import { randomInteger, randomNumbersInRange } from "@/helpers/generalHelpers";
 import { sudokuBases, sudokuDifficultiesMap } from "@/helpers/games/sudoku/entities";
 
@@ -171,9 +177,13 @@ export function shuffleColumns(board: GameField): GameField {
   return shuffledBoard;
 }
 
+export function getRandomBoard(): GameField {
+  return [...sudokuBases[randomInteger(0, sudokuBases.length - 1)]];
+}
+
 export function generateBoard(difficulty: GameDifficulty): GameField {
   const randomBoard = [...sudokuBases[randomInteger(0, sudokuBases.length - 1)]];
-  const shuffledBoard = shuffleBoard(randomBoard, 15);
+  const shuffledBoard = shuffleBoard(randomBoard, 25);
   const cellsToHide = randomNumbersInRange(
     0,
     shuffledBoard.length - 1,
@@ -190,17 +200,15 @@ export function generateBoard(difficulty: GameDifficulty): GameField {
 export function getSudokuDifficulty(
   sudokuSolvingResult: SudokuSolverSuccessResult,
 ): GameDifficulty {
-  const { backtracks, digitsPlaced, guesswork } = sudokuSolvingResult;
+  const { backtracks, guesswork } = sudokuSolvingResult;
 
-  if (guesswork > 5 || backtracks > 10 || digitsPlaced > 120) {
-    return GameDifficulty.Hard;
-  }
+  if (guesswork < 5 && backtracks < 5) return GameDifficulty.Easy;
 
-  if (guesswork > 0 || backtracks > 2) {
+  if (guesswork < 15 && backtracks < 20) {
     return GameDifficulty.Medium;
   }
 
-  return GameDifficulty.Easy;
+  return GameDifficulty.Hard;
 }
 
 export function getAllowedNumbers(field: GameField, cellIndex: number): number[] {
@@ -237,4 +245,224 @@ export function getAllowedNumbers(field: GameField, cellIndex: number): number[]
   }
 
   return [...allowed];
+}
+
+export function generateAreas(field: GameField): SudokuArea[] {
+  const numberOfAreas = randomInteger(22, 30);
+  const numberOfAreasInBlock = Math.floor(numberOfAreas / 9);
+  let additionalAreas = numberOfAreas % 9;
+  const additionalAreaChance = additionalAreas / 8;
+  const areas: SudokuArea[] = [];
+
+  for (let i = 0; i < 9; i += 3) {
+    for (let j = 0; j < 9; j += 3) {
+      const blockCoordinates: number[] = [];
+
+      for (let k = 0; k < 3; k++) {
+        for (let l = 0; l < 3; l++) {
+          // curr += arr[i + k][j + l];
+          blockCoordinates.push(rowAndColumnToIndex(i + k, j + l));
+        }
+      }
+
+      const randomIndexes = randomNumbersInRange(0, 8, numberOfAreasInBlock);
+      areas.push(
+        ...randomIndexes.map((index) => {
+          const cellIndex = blockCoordinates[index];
+          return {
+            cells: [cellIndex],
+            sum: field[cellIndex],
+          };
+        }),
+      );
+
+      const randomNumber = Math.random();
+
+      if (randomNumber < additionalAreaChance && additionalAreas > 0) {
+        const [randomIndex] = randomNumbersInRange(0, 8, 1, randomIndexes);
+        const cellIndex = blockCoordinates[randomIndex];
+        areas.push({
+          cells: [cellIndex],
+          sum: field[cellIndex],
+        });
+        additionalAreas -= 1;
+      }
+    }
+  }
+
+  const indexes = Array(81)
+    .fill(null)
+    .map((_, index) => index);
+  const getNotUsedCells = (areas: SudokuArea[]) => {
+    return indexes.filter(
+      (index) =>
+        !areas
+          .map((area) => area.cells)
+          .flat()
+          .includes(index),
+    );
+  };
+  let notUsedCells = getNotUsedCells(areas);
+  let maxCall = 5;
+
+  while (notUsedCells.length && maxCall > 0) {
+    for (let i = 0; i < areas.length; i++) {
+      const area = areas[i];
+      notUsedCells = getNotUsedCells(areas);
+
+      if (notUsedCells.length === 0) break;
+
+      const neighbors = area.cells.reduce((n: number[], cell: number) => {
+        const cellNeighbors = getCellNeighbors(cell, notUsedCells, n);
+
+        return [...n, ...cellNeighbors];
+      }, [] as number[]);
+
+      if (neighbors.length === 0) continue;
+
+      const filteredNeighbors = neighbors.filter(
+        (neighbor) => !area.cells.map((cellIndex) => field[cellIndex]).includes(field[neighbor]),
+      );
+
+      if (filteredNeighbors.length === 0) continue;
+
+      const randomNeighbor = filteredNeighbors[randomInteger(0, filteredNeighbors.length - 1)];
+      area.cells.push(randomNeighbor);
+      area.sum += field[randomNeighbor];
+    }
+
+    maxCall -= 1;
+  }
+
+  if (getNotUsedCells(areas).length !== 0 || areas.some((area) => area.cells.length === 1)) {
+    return generateAreas(field);
+  }
+
+  return areas;
+}
+
+export function isCellFarLeft(cellIndex: number): boolean {
+  return cellIndex % 9 === 0;
+}
+
+export function isCellFarRight(cellIndex: number): boolean {
+  return cellIndex % 9 === 8;
+}
+
+export function isCellFarTop(cellIndex: number): boolean {
+  return cellIndex < 9;
+}
+
+export function isCellFarBottom(cellIndex: number): boolean {
+  return cellIndex > 71;
+}
+
+export function getCellNeighbors(
+  cellIndex: number,
+  notUsedCells: number[],
+  usedGroupCells: number[],
+): number[] {
+  const neighbors: number[] = [];
+  if (!isCellFarLeft(cellIndex)) {
+    const leftCellIndex = cellIndex - 1;
+
+    if (notUsedCells.includes(leftCellIndex) && !usedGroupCells.includes(leftCellIndex)) {
+      neighbors.push(leftCellIndex);
+    }
+  }
+
+  if (!isCellFarRight(cellIndex)) {
+    const rightCellIndex = cellIndex + 1;
+
+    if (notUsedCells.includes(rightCellIndex) && !usedGroupCells.includes(rightCellIndex)) {
+      neighbors.push(rightCellIndex);
+    }
+  }
+
+  if (!isCellFarTop(cellIndex)) {
+    const topCellIndex = cellIndex - 9;
+
+    if (notUsedCells.includes(topCellIndex) && !usedGroupCells.includes(topCellIndex)) {
+      neighbors.push(topCellIndex);
+    }
+  }
+
+  if (!isCellFarBottom(cellIndex)) {
+    const bottomCellIndex = cellIndex + 9;
+
+    if (notUsedCells.includes(bottomCellIndex) && !usedGroupCells.includes(bottomCellIndex)) {
+      neighbors.push(bottomCellIndex);
+    }
+  }
+
+  return neighbors;
+}
+
+export function getCellAreaCells(cellIndex: number): CellAreaCells {
+  const { row, col } = indexToRowAndColumn(cellIndex);
+  const cells: CellAreaCells = {
+    left: null,
+    right: null,
+    top: null,
+    bottom: null,
+    topLeft: null,
+    topRight: null,
+    bottomLeft: null,
+    bottomRight: null,
+  };
+
+  if (row > 0) {
+    cells.top = rowAndColumnToIndex(row - 1, col);
+  }
+
+  if (row < 8) {
+    cells.bottom = rowAndColumnToIndex(row + 1, col);
+  }
+
+  if (col > 0) {
+    cells.left = rowAndColumnToIndex(row, col - 1);
+  }
+
+  if (col < 8) {
+    cells.right = rowAndColumnToIndex(row, col + 1);
+  }
+
+  if (row > 0 && col > 0) {
+    cells.topLeft = rowAndColumnToIndex(row - 1, col - 1);
+  }
+
+  if (row > 0 && col < 8) {
+    cells.topRight = rowAndColumnToIndex(row - 1, col + 1);
+  }
+
+  if (row < 8 && col > 0) {
+    cells.bottomLeft = rowAndColumnToIndex(row + 1, col - 1);
+  }
+
+  if (row < 8 && col < 8) {
+    cells.bottomRight = rowAndColumnToIndex(row + 1, col + 1);
+  }
+
+  return cells;
+}
+
+export function getAreaSum(field: GameField, area: number[]): number {
+  return area.reduce((acc, cell) => {
+    return acc + field[cell];
+  }, 0);
+}
+
+export function getAreasSum(field: GameField, areas: number[][]): SudokuArea[] {
+  return areas.map((area) => {
+    return {
+      cells: area,
+      sum: getAreaSum(field, area),
+    };
+  });
+}
+
+export function getCellAreaByCellIndex(cellIndex: number, areas: SudokuArea[]): SudokuArea {
+  return areas.find((area) => {
+    return area.cells.includes(cellIndex);
+  }) as SudokuArea;
 }

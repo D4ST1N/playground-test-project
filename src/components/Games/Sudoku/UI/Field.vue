@@ -5,10 +5,10 @@ import { useSudokuStore } from "@/store/games/sudoku";
 import Cell from "@/components/Games/Sudoku/UI/Cell.vue";
 import { config } from "@/helpers/games/sudoku/gameConfig";
 import { computed, ref } from "vue";
-import { indexToRowAndColumn } from "@/helpers/games/sudoku/helpers";
+import { getCellAreaByCellIndex, indexToRowAndColumn } from "@/helpers/games/sudoku/helpers";
 
 const sudokuStore = useSudokuStore();
-const { gameField, initialGameField, solvedGameField } = storeToRefs(sudokuStore);
+const { gameField, initialGameField, solvedGameField, areas } = storeToRefs(sudokuStore);
 
 const focusedCellIndex = ref<number | null>(null);
 
@@ -22,10 +22,6 @@ const fieldStyles = {
   width: `${config.cellSize * 9}px`,
   height: `${config.cellSize * 9}px`,
 };
-
-function isCurrent(cellIndex: number) {
-  return focusedCellIndex.value === cellIndex;
-}
 
 function isHighlighted(cellIndex: number) {
   if (focusedCellIndex.value === null) return false;
@@ -49,6 +45,10 @@ function isInitial(cellIndex: number) {
   );
 }
 
+function getCellArea(cellIndex: number) {
+  return getCellAreaByCellIndex(cellIndex, areas.value);
+}
+
 function onCellFocus(cellIndex: number) {
   focusedCellIndex.value = cellIndex;
 }
@@ -62,10 +62,11 @@ function onCellFocus(cellIndex: number) {
       :value="cell"
       :cellIndex="index"
       :isInitial="isInitial(index)"
-      :isCurrent="isCurrent(index)"
+      :currentIndex="focusedCellIndex"
       :highlighted="isHighlighted(index)"
       :highlightedNumber="highlightedNumber"
       :withError="isIncorrect(index)"
+      :cellArea="getCellArea(index)"
       @focus="onCellFocus"
     />
   </div>
@@ -76,5 +77,6 @@ function onCellFocus(cellIndex: number) {
   display: grid;
   grid-template-columns: repeat(9, auto);
   grid-gap: 0;
+  background-color: #1898d5;
 }
 </style>

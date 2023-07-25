@@ -55,9 +55,9 @@ function handleRightClick() {
     :class="cellClasses"
   >
     <span v-if="fieldCell.label === FieldCellLabel.Flag"><v-icon icon="mdi-flag" /></span>
-    <span v-else-if="fieldCell.label === FieldCellLabel.Question"
-      ><v-icon icon="mdi-help-circle-outline"
-    /></span>
+    <span v-else-if="fieldCell.label === FieldCellLabel.Question">
+      <v-icon icon="mdi-help-circle-outline" />
+    </span>
     <span v-else-if="fieldCell.isHidden"></span>
     <span v-else-if="!fieldCell.isHidden && fieldCell.isPlanted"><v-icon icon="mdi-mine" /></span>
     <span v-else :style="cellStyles">{{

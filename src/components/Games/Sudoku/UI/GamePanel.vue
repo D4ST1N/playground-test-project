@@ -3,9 +3,10 @@ import { storeToRefs } from "pinia";
 
 import { useSudokuStore } from "@/store/games/sudoku";
 import HighScore from "@/components/Games/Sudoku/UI/HighScore.vue";
+import { GameDifficulty } from "@/helpers/games/sudoku/types";
 
 const gameStore = useSudokuStore();
-const { time } = storeToRefs(gameStore);
+const { time, currentDifficulty } = storeToRefs(gameStore);
 
 function solvePuzzle() {
   gameStore.solve();
@@ -32,7 +33,11 @@ function startNew() {
     <div :class="$style.actions">
       <v-btn color="teal-darken-1" @click="startNew"> Start New Game </v-btn>
       <v-btn color="warning" @click="restart"> Restart </v-btn>
-      <v-btn color="success" @click="solvePuzzle">
+      <v-btn
+        v-if="currentDifficulty !== GameDifficulty.Expert"
+        color="success"
+        @click="solvePuzzle"
+      >
         Solve
         <v-icon class="ml-2">mdi-alert-outline</v-icon>
         <v-tooltip activator="parent" location="top" theme="light">
@@ -52,7 +57,7 @@ function startNew() {
   justify-content: center;
   align-items: flex-end;
   color: #efefef;
-  width: 150px;
+  width: 300px;
   gap: 12px;
 }
 

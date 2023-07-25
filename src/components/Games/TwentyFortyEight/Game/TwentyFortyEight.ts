@@ -23,9 +23,16 @@ import {
   TwentyFortyEightKeyCode,
 } from "@/helpers/games/twentyFortyEight/types";
 import { Tile } from "@/components/Games/TwentyFortyEight/Game/Tile";
-import { timeout } from "@/helpers/generalHelpers";
+import { soundFabric, timeout } from "@/helpers/generalHelpers";
 import { useTwentyFortyEightStore } from "@/store/games/twentyFortyEight";
 import { GameStatus } from "@/helpers/generalTypes";
+
+const gameAudios = soundFabric([
+  {
+    key: "swipe",
+    sound: "/src/assets/sounds/games/2048/swipe.mp3",
+  },
+]);
 
 export class TwentyFortyEight {
   ctx: CanvasRenderingContext2D;
@@ -186,6 +193,7 @@ export class TwentyFortyEight {
   async addTileIfAnyMove(moved: boolean) {
     if (!moved) return;
 
+    gameAudios.swipe.playMultiple();
     await timeout(this.config.moveAnimationTime * 1.1);
     this.addNewTile();
 

@@ -12,6 +12,6 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  height: 140px;
+  height: 120px;
 }
 </style>

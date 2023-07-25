@@ -5,6 +5,9 @@
         Games list
       </v-btn>
     </div>
+    <div>
+      <slot name="title"></slot>
+    </div>
     <div :class="$style.actions">
       <slot name="actions"></slot>
     </div>

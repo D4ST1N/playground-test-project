@@ -1,4 +1,4 @@
-import { HexCode } from "@/helpers/generalTypes";
+import { GameSoundMapping, HexCode } from "@/helpers/generalTypes";
 
 export function brightenColor(color: HexCode, percent: number) {
   let R = parseInt(color.substring(1, 3), 16);
@@ -53,8 +53,57 @@ export function randomNumbersInRange(
   return generatedNumbers;
 }
 
-export function formatTime(time: number) {
+export function formatTime(time: number): string {
   return `${Math.floor(time / 60)}:${(time % 60).toLocaleString("en-US", {
     minimumIntegerDigits: 2,
   })}`;
+}
+
+export function capitalizeString(string: string): string {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+export class GameSound {
+  audio: HTMLAudioElement;
+
+  constructor(
+    public key: string,
+    private sound: string,
+    loop: boolean = false,
+    volume: number = 1,
+  ) {
+    this.audio = new Audio(sound);
+    this.audio.loop = loop;
+    this.audio.volume = volume;
+  }
+
+  play() {
+    this.audio.play();
+  }
+
+  changeVolume(volume: number) {
+    this.audio.volume = volume;
+  }
+
+  playMultiple(volume?: number) {
+    const audio = new Audio(this.sound);
+    audio.volume = volume ? volume : this.audio.volume;
+    audio.play();
+  }
+
+  pause() {
+    this.audio.pause();
+  }
+}
+
+export function soundFabric(soundMappings: GameSoundMapping[]) {
+  return soundMappings.reduce((acc: Record<string, GameSound>, soundMapping) => {
+    acc[soundMapping.key] = new GameSound(
+      soundMapping.key,
+      soundMapping.sound,
+      soundMapping.loop,
+      soundMapping.volume,
+    );
+    return acc;
+  }, {});
 }

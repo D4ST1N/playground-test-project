@@ -45,3 +45,10 @@ export interface Coordinates {
 
 // export type HexCode = `#${HexCodeShort | HexCodeClassic | HexCodeWithAlpha}`;
 export type HexCode = string;
+
+export interface GameSoundMapping {
+  key: string;
+  sound: string;
+  loop?: boolean;
+  volume?: number;
+}

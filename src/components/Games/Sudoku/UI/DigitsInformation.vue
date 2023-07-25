@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useSudokuStore } from "@/store/games/sudoku";
+import ControlInformation from "./ControlInformation.vue";
 
 const gameStore = useSudokuStore();
 </script>
@@ -15,6 +16,8 @@ const gameStore = useSudokuStore();
       <div :class="$style.digit">{{ digit }}</div>
       <div :class="$style.count">{{ 9 - count }}</div>
     </div>
+    <h2 class="mt-2">Control:</h2>
+    <ControlInformation />
   </div>
 </template>
 
@@ -22,9 +25,9 @@ const gameStore = useSudokuStore();
 .digitsInformation {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  width: 150px;
+  width: 300px;
   gap: 5px;
 }
 
@@ -40,14 +43,14 @@ const gameStore = useSudokuStore();
 }
 
 .digit {
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   border: 1px solid #eeec;
   display: flex;
   justify-content: center;
   align-items: center;
   font-weight: bold;
-  font-size: 40px;
+  font-size: 34px;
 }
 
 .count {

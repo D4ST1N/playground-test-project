@@ -37,7 +37,7 @@ function endGame() {
   left: 0;
   background-color: rgba(0, 0, 0, 0.67);
   display: flex;
-  padding-top: 250px;
+  padding-top: 10px;
   justify-content: center;
 }
 

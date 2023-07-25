@@ -126,7 +126,8 @@ export const sudokuBases = [
 ];
 
 export const sudokuDifficultiesMap = {
-  [GameDifficulty.Easy]: 38,
-  [GameDifficulty.Medium]: 45,
-  [GameDifficulty.Hard]: 52,
+  [GameDifficulty.Easy]: 46,
+  [GameDifficulty.Medium]: 55,
+  [GameDifficulty.Hard]: 66,
+  [GameDifficulty.Expert]: 81,
 };

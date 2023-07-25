@@ -19,8 +19,35 @@ import {
   FieldSize,
 } from "@/helpers/games/minesweeper/types";
 import { GameStatus } from "@/helpers/generalTypes";
-import { formatTime, timeout } from "@/helpers/generalHelpers";
+import { formatTime, soundFabric, timeout } from "@/helpers/generalHelpers";
 import { useUserStore } from "@/store/user";
+
+const gameAudios = soundFabric([
+  {
+    key: "open",
+    sound: "/src/assets/sounds/games/minesweeper/open.mp3",
+  },
+  {
+    key: "victory",
+    sound: "/src/assets/sounds/games/minesweeper/tada.mp3",
+  },
+  {
+    key: "lose",
+    sound: "/src/assets/sounds/games/minesweeper/lose.mp3",
+  },
+  {
+    key: "tick",
+    sound: "/src/assets/sounds/games/minesweeper/tick.mp3",
+  },
+  {
+    key: "recycle",
+    sound: "/src/assets/sounds/games/minesweeper/recycle.mp3",
+  },
+  {
+    key: "placeLabel",
+    sound: "/src/assets/sounds/games/minesweeper/place-label.mp3",
+  },
+]);
 
 export const useMinesweeperStore = defineStore(
   "minesweeper",
@@ -73,8 +100,14 @@ export const useMinesweeperStore = defineStore(
       startTimer();
     }
 
-    async function openCell(cellCoordinates: FieldCellCoordinates) {
-      if (!field.value || interactionNotAllowed()) return;
+    async function openCell(
+      cellCoordinates: FieldCellCoordinates,
+      byPlayer: boolean = true,
+      force: boolean = false,
+    ) {
+      if (!field.value || (interactionNotAllowed() && !force)) return;
+
+      if (byPlayer) gameAudios.open.play();
 
       const cell: FieldCell = field.value[cellCoordinates.x][cellCoordinates.y];
 
@@ -83,7 +116,10 @@ export const useMinesweeperStore = defineStore(
       cell.isHidden = false;
 
       if (cell.isPlanted) {
+        openRemainMines();
+        gameAudios.lose.play();
         status.value = GameStatus.Defeat;
+        bombsCount.value -= 1;
         stopTimer();
 
         return;
@@ -91,10 +127,11 @@ export const useMinesweeperStore = defineStore(
 
       if (cell.numberOfMinesNearby === 0) {
         const neighbors = getCellNeighbors(cellCoordinates, field.value);
+        gameAudios.recycle.play();
 
         await timeout(25);
         neighbors.forEach((neighbor) => {
-          openCell(neighbor.coordinates);
+          openCell(neighbor.coordinates, false);
         });
       }
 
@@ -107,6 +144,8 @@ export const useMinesweeperStore = defineStore(
       const cell: FieldCell = field.value[cellCoordinates.x][cellCoordinates.y];
 
       if (!cell.isHidden) return;
+
+      gameAudios.placeLabel.play();
 
       if (cell.label === FieldCellLabel.None) {
         cell.label = FieldCellLabel.Flag;
@@ -124,6 +163,8 @@ export const useMinesweeperStore = defineStore(
 
       const cell: FieldCell = field.value[cellCoordinates.x][cellCoordinates.y];
 
+      gameAudios.tick.play();
+
       if (cell.numberOfMinesNearby === 0) return;
 
       const neighbors = getCellNeighbors(cellCoordinates, field.value);
@@ -137,7 +178,7 @@ export const useMinesweeperStore = defineStore(
 
       if (labeledNeighbors.length === cell.numberOfMinesNearby && !cell.isHidden) {
         hiddenNeighbors.forEach((neighbor) => {
-          openCell(neighbor.coordinates);
+          openCell(neighbor.coordinates, false);
         });
       } else {
         hiddenNeighbors.forEach((neighbor) => {
@@ -171,7 +212,37 @@ export const useMinesweeperStore = defineStore(
         }
 
         stopTimer();
+
+        gameAudios.victory.play();
       }
+    }
+
+    async function openRemainMines() {
+      if (!field.value || status.value === GameStatus.Defeat) return;
+
+      for (let i = 0; i < field.value.length; i += 1) {
+        for (let j = 0; j < field.value[i].length; j += 1) {
+          const cell = field.value[i][j];
+
+          if (!cell.isPlanted || !cell.isHidden) continue;
+
+          const speedMultiplier = Math.ceil(0.2 * (bombsCount.value / 5));
+          await timeout(100 / speedMultiplier);
+
+          openCell(cell.coordinates, false, true);
+          gameAudios.lose.playMultiple(0.5);
+        }
+      }
+
+      // field.value.forEach(async (column) => {
+      //   column.forEach(async (cell) => {
+      //     if (!cell.isPlanted || !cell.isHidden) return;
+
+      //     await timeout(100);
+      //     console.log(1);
+      //     openCell(cell.coordinates, true, true);
+      //   });
+      // });
     }
 
     function startTimer() {
