@@ -1,40 +1,35 @@
 <script setup lang="ts">
 import { useSudokuStore } from "@/store/games/sudoku";
-import ControlInformation from "./ControlInformation.vue";
 
-const gameStore = useSudokuStore();
+const sudokuStore = useSudokuStore();
 </script>
 
 <template>
   <div :class="$style.digitsInformation">
-    <h2 class="mb-2">Digits left:</h2>
     <div
-      v-for="(count, digit) in gameStore.digitsUsed"
+      v-for="(count, digit) in sudokuStore.digitsUsed"
       :key="digit"
       :class="{ [$style.digitWrapper]: true, [$style.filled]: count === 9 }"
     >
       <div :class="$style.digit">{{ digit }}</div>
       <div :class="$style.count">{{ 9 - count }}</div>
     </div>
-    <h2 class="mt-2">Control:</h2>
-    <ControlInformation />
   </div>
 </template>
 
 <style lang="scss" module>
 .digitsInformation {
   display: flex;
-  flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  width: 300px;
-  gap: 5px;
+  gap: 16px;
 }
 
 .digitWrapper {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 15px;
+  gap: 4px;
   transition: all 0.3s ease-in-out;
 }
 
@@ -43,30 +38,19 @@ const gameStore = useSudokuStore();
 }
 
 .digit {
-  width: 50px;
-  height: 50px;
+  width: 32px;
+  height: 32px;
   border: 1px solid #eeec;
   display: flex;
   justify-content: center;
   align-items: center;
   font-weight: bold;
-  font-size: 34px;
+  font-size: 24px;
 }
 
 .count {
-  font-size: 30px;
-  position: relative;
-  margin-left: 20px;
-
-  &::before {
-    content: "";
-    position: absolute;
-    width: 15px;
-    height: 2px;
-    background-color: #fff;
-    opacity: 1;
-    top: calc(50% - 1px);
-    left: -24px;
-  }
+  font-size: 16px;
+  line-height: 1;
+  font-weight: 200;
 }
 </style>

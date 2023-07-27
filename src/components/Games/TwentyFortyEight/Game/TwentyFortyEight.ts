@@ -31,16 +31,18 @@ const gameAudios = soundFabric([
   {
     key: "swipe",
     sound: "/src/assets/sounds/games/2048/swipe.mp3",
+    volume: 0.4,
   },
 ]);
 
 export class TwentyFortyEight {
   ctx: CanvasRenderingContext2D;
-  field: GameField;
+  field: GameField = [];
   gameStore: ReturnType<typeof useTwentyFortyEightStore>;
   config: IGameConfig;
   scoreId: string;
   isCustom: boolean;
+  checkWinCondition: boolean;
 
   constructor(
     public canvas: HTMLCanvasElement,
@@ -52,11 +54,23 @@ export class TwentyFortyEight {
     this.gameStore.setCurrentGameId(this.scoreId);
     this.config = { ...gameConfig, ...config };
     this.isCustom = isCustomConfig(this.config);
-    this.field = getEmptyField(this.config.fieldSize, this.config.fieldSize);
+    this.checkWinCondition = true;
+  }
+
+  get gameStopped() {
+    return (
+      this.gameStore.status === GameStatus.Victory || this.gameStore.status === GameStatus.Defeat
+    );
+  }
+
+  public updateConfig(config: Partial<IGameConfig>) {
+    this.config = { ...this.config, ...config };
   }
 
   public start() {
+    this.gameStore.clearScore();
     this.gameStore.updateStatus(GameStatus.Playing);
+    this.field = getEmptyField(this.config.fieldSize, this.config.fieldSize);
     this.addInitialTiles();
     this.render();
 
@@ -69,6 +83,7 @@ export class TwentyFortyEight {
     this.gameStore.updateStatus(GameStatus.Playing);
     this.gameStore.clearScore();
     this.field = getEmptyField(this.config.fieldSize, this.config.fieldSize);
+    this.checkWinCondition = true;
     this.addInitialTiles();
   }
 
@@ -93,6 +108,8 @@ export class TwentyFortyEight {
   }
 
   handleMovement(e: KeyboardEvent) {
+    if (this.gameStopped) return;
+
     switch (e.code) {
       case TwentyFortyEightKeyCode.Left:
       case TwentyFortyEightKeyCode.LeftArrow:
@@ -163,7 +180,7 @@ export class TwentyFortyEight {
           currentTile.move(newPosition);
           this.updateScore(currentTile.value);
 
-          if (currentTile.value === this.config.winValue) {
+          if (this.checkWinCondition && currentTile.value === this.config.winValue) {
             this.setIsWin();
           }
         } else {
@@ -187,6 +204,7 @@ export class TwentyFortyEight {
   }
 
   setIsWin() {
+    this.checkWinCondition = false;
     this.gameStore.updateStatus(GameStatus.Victory);
   }
 

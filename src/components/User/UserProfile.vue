@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-
 import { User, useUserStore } from "@/store/user";
-import UserLogoutConfirmation from "./UserLogoutConfirmation.vue";
+import UserLogoutConfirmation from "@/components/User/UserLogoutConfirmation.vue";
 
 interface menuItem {
   name: string;
@@ -59,19 +58,21 @@ function logout() {
 
 <template>
   <div :class="$style.user">
-    <v-menu open-on-hover transition="slide-y-transition">
+    <img :src="user.avatar" :alt="user.name" class="elevation-12" :class="$style.avatar" />
+    <v-menu open-on-click transition="slide-y-transition">
       <template #activator="{ props }">
         <v-btn append-icon="mdi-menu-down" variant="plain" v-bind="props">
           {{ user.name }}
         </v-btn>
       </template>
 
-      <v-list :width="220">
+      <v-list :width="220" bg-color="var(--main-darkest-color)">
         <v-list-item
           v-for="(item, index) in userMenu"
           :key="index"
           :value="item.name"
           :ripple="true"
+          :class="$style.menuItem"
           @click="menuItemClick(item)"
         >
           <template #prepend>
@@ -81,7 +82,6 @@ function logout() {
         </v-list-item>
       </v-list>
     </v-menu>
-    <img :src="user.avatar" :alt="user.name" :class="$style.avatar" />
   </div>
   <UserLogoutConfirmation
     :show-modal="showConfirmationDialog"
@@ -102,5 +102,14 @@ function logout() {
   width: 50px;
   height: 50px;
   border-radius: 50%;
+  border: 2px solid var(--main-primary-color);
+}
+
+.menu {
+  background-color: var(--main-dark-color);
+}
+
+.menuItem {
+  color: var(--main-secondary-color);
 }
 </style>

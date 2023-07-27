@@ -22,6 +22,7 @@ export enum GameName {
 
 export enum GameStatus {
   NotStarted = "NotStarted",
+  Preparing = "Preparing",
   Playing = "Playing",
   Paused = "Paused",
   Victory = "Victory",
@@ -51,4 +52,56 @@ export interface GameSoundMapping {
   sound: string;
   loop?: boolean;
   volume?: number;
+}
+
+export enum MouseButtonType {
+  Left = "Left",
+  Middle = "Middle",
+  Right = "Right",
+}
+
+export enum ControlType {
+  Keyboard = "Keyboard",
+  Mouse = "Mouse",
+}
+
+export interface KeyboardKey {
+  key: string;
+}
+
+export interface MouseButton {
+  button: MouseButtonType;
+}
+
+export interface KeyboardControlInformation {
+  control: KeyboardKey[];
+  type: ControlType.Keyboard;
+  description: string;
+}
+
+export interface MouseControlInformation {
+  control: MouseButton[];
+  type: ControlType.Mouse;
+  description: string;
+}
+
+export type ControlInformation = KeyboardControlInformation | MouseControlInformation;
+
+export enum KeyboardKeyCode {
+  Left = "KeyA",
+  ArrowLeft = "ArrowLeft",
+  Right = "KeyD",
+  ArrowRight = "ArrowRight",
+  Down = "KeyS",
+  ArrowDown = "ArrowDown",
+  Up = "KeyW",
+  ArrowUp = "ArrowUp",
+  Space = "Space",
+}
+
+export enum NavigationDirection {
+  Left = "Left",
+  Right = "Right",
+  Up = "Up",
+  Down = "Down",
 }

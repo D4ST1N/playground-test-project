@@ -17,5 +17,12 @@ export default createVuetify({
   },
   theme: {
     defaultTheme: "dark",
+    themes: {
+      dark: {
+        colors: {
+          surface: "#0f0b0c",
+        },
+      },
+    },
   },
 });

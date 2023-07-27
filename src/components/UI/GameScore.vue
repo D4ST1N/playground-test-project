@@ -1,19 +1,20 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import { storeToRefs } from "pinia";
 import { v4 as uuidv4 } from "uuid";
-
 import { timeout } from "@/helpers/generalHelpers";
-import { useTwentyFortyEightStore } from "@/store/games/twentyFortyEight";
 
-const gameStore = useTwentyFortyEightStore();
-const { currentScore } = storeToRefs(gameStore);
+const props = defineProps<{
+  currentScore: number;
+}>();
 const additions = ref<{ id: string; value: number }[]>([]);
 
-watch(currentScore, (newScore: number, oldScore: number) => {
-  const diff = newScore - oldScore;
-  addAddition(diff);
-});
+watch(
+  () => props.currentScore,
+  (newScore: number, oldScore: number) => {
+    const diff = newScore - oldScore;
+    addAddition(diff);
+  },
+);
 
 async function addAddition(value: number) {
   const id = uuidv4();
@@ -26,9 +27,9 @@ async function addAddition(value: number) {
 
 <template>
   <div :class="$style.wrapper">
+    <div :class="$style.scoreLabel">Score</div>
     <div :class="$style.scoreWrapper">
-      <div :class="$style.scoreLabel">Score</div>
-      <div :class="$style.score">{{ currentScore }}</div>
+      <div :class="$style.score">{{ props.currentScore }}</div>
       <div v-for="addition in additions" :key="addition.id" :class="$style.addition">
         +{{ addition.value }}
       </div>
@@ -39,9 +40,8 @@ async function addAddition(value: number) {
 <style lang="scss" module>
 .wrapper {
   display: flex;
-  justify-content: flex-end;
   align-items: center;
-  width: 150px;
+  gap: 12px;
 }
 
 .scoreWrapper {
@@ -49,34 +49,32 @@ async function addAddition(value: number) {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-width: 120px;
   border-radius: 6px;
   gap: 5px;
   padding: 5px;
-  background-color: #546e7a;
   position: relative;
 }
 
 .scoreLabel {
   font-size: 20px;
   font-weight: bold;
-  color: #eee4da;
+  color: var(--main-primary-color);
   text-transform: uppercase;
 }
 
 .score {
-  color: #fff;
+  color: var(--main-secondary-color);
   font-weight: bold;
   font-size: 28px;
 }
 
 .addition {
-  color: #fff;
+  color: var(--main-secondary-color);
   font-weight: bold;
   font-size: 28px;
   position: absolute;
   left: 50%;
-  top: 40px;
+  top: 8px;
   animation: addition 0.6s ease;
 }
 

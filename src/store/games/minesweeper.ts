@@ -1,7 +1,6 @@
 import { computed, ref, type Ref } from "vue";
 import { defineStore } from "pinia";
 import { v4 as uuidv4 } from "uuid";
-
 import {
   generateField,
   populateField,
@@ -26,6 +25,7 @@ const gameAudios = soundFabric([
   {
     key: "open",
     sound: "/src/assets/sounds/games/minesweeper/open.mp3",
+    volume: 0.4,
   },
   {
     key: "victory",
@@ -38,6 +38,7 @@ const gameAudios = soundFabric([
   {
     key: "tick",
     sound: "/src/assets/sounds/games/minesweeper/tick.mp3",
+    volume: 0.5,
   },
   {
     key: "recycle",
@@ -46,6 +47,7 @@ const gameAudios = soundFabric([
   {
     key: "placeLabel",
     sound: "/src/assets/sounds/games/minesweeper/place-label.mp3",
+    volume: 0.3,
   },
 ]);
 
@@ -70,6 +72,18 @@ export const useMinesweeperStore = defineStore(
     let timerId: number | null = null;
 
     const time = computed(() => formatTime(timer.value));
+    const hiddenCellsCount = computed(() => {
+      if (!field.value) return 0;
+
+      return field.value.reduce((acc, row) => {
+        return (
+          acc +
+          row.reduce((acc, cell) => {
+            return acc + (cell.isHidden ? 1 : 0);
+          }, 0)
+        );
+      }, 0);
+    });
 
     const interactionNotAllowed = () =>
       status.value === GameStatus.Victory || status.value === GameStatus.Defeat;
@@ -80,6 +94,7 @@ export const useMinesweeperStore = defineStore(
       sizeSelected.value = size;
       bombsCount.value = configuration.numberOfMines;
       timer.value = 0;
+      status.value = GameStatus.Preparing;
     }
 
     function endGame() {
@@ -233,16 +248,6 @@ export const useMinesweeperStore = defineStore(
           gameAudios.lose.playMultiple(0.5);
         }
       }
-
-      // field.value.forEach(async (column) => {
-      //   column.forEach(async (cell) => {
-      //     if (!cell.isPlanted || !cell.isHidden) return;
-
-      //     await timeout(100);
-      //     console.log(1);
-      //     openCell(cell.coordinates, true, true);
-      //   });
-      // });
     }
 
     function startTimer() {
@@ -275,9 +280,11 @@ export const useMinesweeperStore = defineStore(
       sizeSelected,
       bombsPlanted,
       bombsCount,
+      selectedConfiguration,
       status,
       scores,
       time,
+      hiddenCellsCount,
       startNewGame,
       endGame,
       populateGame,

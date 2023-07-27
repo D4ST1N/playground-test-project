@@ -1,19 +1,18 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { computed } from "vue";
-
 import { formatTime } from "@/helpers/generalHelpers";
 import { useSudokuStore } from "@/store/games/sudoku";
 import { GameDifficulty } from "@/helpers/games/sudoku/types";
 
-const store = useSudokuStore();
-const { scores, currentDifficulty } = storeToRefs(store);
-const highScores = computed(() => scores.value[currentDifficulty.value as GameDifficulty]);
+const sudokuStore = useSudokuStore();
+const { scores, currentDifficulty } = storeToRefs(sudokuStore);
+const highScores = computed(() => scores.value[currentDifficulty.value as GameDifficulty] || []);
 </script>
 
 <template>
   <div :class="$style.highScore">
-    <h2>High Score</h2>
+    <h2 :class="$style.title">High Score</h2>
     <div v-for="score in highScores">
       <b>{{ score.playerName }}:&nbsp;</b>
       <span>{{ formatTime(score.time) }}</span>
@@ -26,8 +25,12 @@ const highScores = computed(() => scores.value[currentDifficulty.value as GameDi
 .highScore {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: flex-start;
   gap: 10px;
-  width: 180px;
+  color: var(--main-secondary-color);
+}
+
+.title {
+  color: var(--main-primary-color);
 }
 </style>

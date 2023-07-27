@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
 import { ref } from "vue";
-
 import { defaultGameConfigurations } from "@/helpers/games/minesweeper/entities";
 import {
   DefaultFieldSize,
@@ -9,13 +7,14 @@ import {
   GameFieldOptions,
 } from "@/helpers/games/minesweeper/types";
 import { useMinesweeperStore } from "@/store/games/minesweeper";
-import { useUserStore } from "@/store/user";
 import SelectCustomSizeModal from "@/components/Games/Minesweeper/UI/SelectCustomSizeModal.vue";
+import StyledTitle from "@/components/UI/StyledTitle.vue";
 
-const userStore = useUserStore();
-const store = useMinesweeperStore();
-const isModalOpen = ref(false);
-const { user } = storeToRefs(userStore);
+const props = defineProps({
+  disabled: Boolean,
+});
+const minesweeperStore = useMinesweeperStore();
+const isModalOpen = ref<boolean>(false);
 
 function showModal() {
   isModalOpen.value = true;
@@ -27,45 +26,61 @@ function handleClose() {
 
 function handleSubmit(customGameOptions: GameFieldOptions) {
   handleClose();
-  store.startNewGame(customGameOptions, CustomFieldSize.Custom);
+  minesweeperStore.startNewGame(customGameOptions, CustomFieldSize.Custom);
 }
 
 function startGameWithDefaultConfiguration(size: DefaultFieldSize) {
-  store.startNewGame(defaultGameConfigurations[size], size);
+  minesweeperStore.startNewGame(defaultGameConfigurations[size], size);
 }
 </script>
 
 <template>
   <div :class="$style.buttons">
-    <v-alert
-      v-if="!user"
-      type="info"
-      title="You need to be authorized to play games"
-      class="elevation-4 mt-4"
-    ></v-alert>
-    <h2>Choose game field size:</h2>
+    <StyledTitle> Choose game field size </StyledTitle>
     <v-btn
-      :disabled="!user"
-      color="success"
+      :disabled="props.disabled"
+      variant="outlined"
+      color="var(--main-primary-color)"
       @click="() => startGameWithDefaultConfiguration(DefaultFieldSize.Small)"
     >
+      <template v-slot:prepend>
+        <v-icon size="x-small">mdi-fire</v-icon>
+      </template>
       Small
     </v-btn>
     <v-btn
-      :disabled="!user"
-      color="warning"
+      :disabled="props.disabled"
+      variant="outlined"
+      color="var(--main-primary-color)"
       @click="() => startGameWithDefaultConfiguration(DefaultFieldSize.Medium)"
     >
+      <template v-slot:prepend>
+        <v-icon size="medium">mdi-fire</v-icon>
+      </template>
       Medium
     </v-btn>
     <v-btn
-      :disabled="!user"
-      color="error"
+      :disabled="props.disabled"
+      variant="outlined"
+      color="var(--main-primary-color)"
       @click="() => startGameWithDefaultConfiguration(DefaultFieldSize.Expert)"
     >
+      <template v-slot:prepend>
+        <v-icon size="x-large">mdi-fire</v-icon>
+      </template>
       Expert
     </v-btn>
-    <v-btn color="info" @click="showModal"> Custom </v-btn>
+    <v-btn
+      :disabled="props.disabled"
+      variant="outlined"
+      color="var(--main-primary-color)"
+      @click="showModal"
+    >
+      <template v-slot:prepend>
+        <v-icon size="medium">mdi-help</v-icon>
+      </template>
+      Custom
+    </v-btn>
     <SelectCustomSizeModal
       :showModal="isModalOpen"
       @close-dialog="handleClose"

@@ -1,11 +1,12 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { v4 as uuidv4 } from "uuid";
-
 import { NumberOfFigures, TetrisFigureType } from "@/helpers/games/tetris/types";
 import { useUserStore } from "@/store/user";
 import { migrations } from "@/store/migrations";
 import { soundFabric } from "@/helpers/generalHelpers";
+import { GameStatus } from "@/helpers/generalTypes";
+import { TetrisGame } from "@/helpers/games/tetris/game/TetrisGame";
 
 const initialNumbers: NumberOfFigures = {
   [TetrisFigureType.I]: 0,
@@ -60,9 +61,24 @@ export const useTetrisStore = defineStore(
     const userStore = useUserStore();
     const numberOfFigures = ref<NumberOfFigures>({ ...initialNumbers });
     const scores = ref<GameHighScore[]>([]);
+    const status = ref<GameStatus>(GameStatus.NotStarted);
     const currentTheme = ref<string>("theme1");
     const musicStopped = ref<boolean>(false);
+    const gameLevel = ref<number>(1);
+    const clearedRows = ref<number>(0);
     const current = ref<string>("");
+    const score = ref<number>(0);
+    const game = ref<TetrisGame | null>(null);
+
+    function init(canvas: HTMLCanvasElement, nextFigureCanvas: HTMLCanvasElement) {
+      game.value = new TetrisGame({ canvas, nextFigureCanvas });
+    }
+
+    function startGame() {
+      if (!game.value) return;
+
+      game.value.start();
+    }
 
     function setCurrentGameId(currentId: string) {
       current.value = currentId;
@@ -84,11 +100,15 @@ export const useTetrisStore = defineStore(
 
       if (currentTheme.value === "theme1") {
         currentTheme.value = "theme2";
+        gameLevel.value = 2;
       } else if (currentTheme.value === "theme2") {
         currentTheme.value = "theme3";
+        gameLevel.value = 3;
       } else {
         return;
       }
+
+      if (musicStopped.value) return;
 
       let volumeLevel = 0.3;
 
@@ -112,10 +132,19 @@ export const useTetrisStore = defineStore(
       loop();
     }
 
+    function setGameStatus(newStatus: GameStatus) {
+      status.value = newStatus;
+    }
+
+    function increaseClearedRows(by: number) {
+      clearedRows.value += by;
+    }
+
     function setScore(gameScore: number, id: string) {
       if (!userStore.user) return;
 
       const existedScore = scores.value.find((score) => score.id === id);
+      score.value = gameScore;
 
       if (existedScore) {
         existedScore.score = gameScore;
@@ -149,10 +178,18 @@ export const useTetrisStore = defineStore(
     return {
       numberOfFigures,
       scores,
+      status,
       current,
       musicStopped,
+      gameLevel,
+      clearedRows,
+      score,
+      init,
+      startGame,
       startMusic,
       stopMusic,
+      setGameStatus,
+      increaseClearedRows,
       increaseDifficulty,
       setCurrentGameId,
       setScore,

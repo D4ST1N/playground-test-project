@@ -1,7 +1,7 @@
 import { computed, ref, type Ref } from "vue";
 import { defineStore } from "pinia";
 import { v4 as uuidv4 } from "uuid";
-
+import _ from "lodash";
 import {
   GameDifficulty,
   GameField,
@@ -20,7 +20,7 @@ import {
   getSudokuDifficulty,
   shuffleBoard,
 } from "@/helpers/games/sudoku/helpers";
-import _ from "lodash";
+import { config } from "@/helpers/games/sudoku/gameConfig";
 
 interface DigitsCount {
   [key: number]: number;
@@ -72,12 +72,15 @@ export const useSudokuStore = defineStore(
     const solvedGameField: Ref<GameField> = ref([]);
     const sudokuSolver = new SudokuSolver();
     const currentDifficulty: Ref<GameDifficulty | null> = ref(null);
-    const errorsCount: Ref<number> = ref(0);
+    const livesCount: Ref<number> = ref(config.livesCount);
     const areas = ref<SudokuArea[]>([]);
+    const musicIsPlaying = ref<boolean>(false);
+    const totalEmptyCellsCount = ref<number>(0);
 
     let timerId: number | null = null;
 
     const time = computed(() => formatTime(timer.value));
+    const emptyCellsCount = computed(() => gameField.value.filter((cell) => !cell).length);
 
     const digitsUsed = computed((): DigitsCount => {
       if (!gameField.value.length) return {};
@@ -126,9 +129,11 @@ export const useSudokuStore = defineStore(
       currentDifficulty.value = gameDifficulty;
       areas.value = generateAreas(solvedGameField.value);
       timer.value = 0;
-      errorsCount.value = 0;
+      livesCount.value = config.livesCount;
       status.value = GameStatus.Playing;
+      totalEmptyCellsCount.value = emptyCellsCount.value;
       gameAudios.theme.play();
+      musicIsPlaying.value = true;
 
       startTimer();
     }
@@ -153,6 +158,7 @@ export const useSudokuStore = defineStore(
 
     function restart() {
       reset();
+      stopTimer();
       startTimer();
     }
 
@@ -170,8 +176,13 @@ export const useSudokuStore = defineStore(
       }
 
       if (value !== 0 && solvedGameField.value[cellIndex] !== value) {
-        errorsCount.value += 1;
+        livesCount.value -= 1;
         gameAudios.fail.playMultiple();
+
+        if (livesCount.value === 0) {
+          status.value = GameStatus.Defeat;
+          stopTimer();
+        }
       }
 
       if (value !== 0 && solvedGameField.value[cellIndex] === value) {
@@ -193,7 +204,23 @@ export const useSudokuStore = defineStore(
       addScore();
     }
 
+    function toggleMusic() {
+      if (musicIsPlaying.value) {
+        gameAudios.theme.pause();
+        musicIsPlaying.value = false;
+      } else {
+        gameAudios.theme.play();
+        musicIsPlaying.value = true;
+      }
+    }
+
+    function stopMusic() {
+      gameAudios.theme.pause();
+      musicIsPlaying.value = false;
+    }
+
     function startTimer() {
+      timer.value = 0;
       timerId = window.setInterval(() => {
         timer.value += 1;
       }, 1000);
@@ -227,8 +254,11 @@ export const useSudokuStore = defineStore(
       initialGameField,
       solvedGameField,
       currentDifficulty,
-      errorsCount,
+      livesCount,
       areas,
+      musicIsPlaying,
+      emptyCellsCount,
+      totalEmptyCellsCount,
       startNewGame,
       solve,
       updateField,
@@ -236,6 +266,8 @@ export const useSudokuStore = defineStore(
       restart,
       startNew,
       setCell,
+      toggleMusic,
+      stopMusic,
       startTimer,
       stopTimer,
       addScore,

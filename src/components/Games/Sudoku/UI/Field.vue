@@ -77,6 +77,5 @@ function onCellFocus(cellIndex: number) {
   display: grid;
   grid-template-columns: repeat(9, auto);
   grid-gap: 0;
-  background-color: #1898d5;
 }
 </style>

@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-
 import { useTwentyFortyEightStore } from "@/store/games/twentyFortyEight";
 
-const tetrisStore = useTwentyFortyEightStore();
-const { scores, current } = storeToRefs(tetrisStore);
+const tfeStore = useTwentyFortyEightStore();
+const { scores, current } = storeToRefs(tfeStore);
 </script>
 
 <template>
   <div :class="$style.highScore">
-    <h2>High Scores</h2>
+    <h2 :class="$style.title">High Scores</h2>
     <div v-for="score in scores" :class="{ [$style.currentHighScore]: score.id === current }">
       <b>{{ score.playerName }}:&nbsp;</b>
       <span>{{ score.score }}</span>
@@ -25,6 +24,11 @@ const { scores, current } = storeToRefs(tetrisStore);
   gap: 10px;
   width: 200px;
   min-height: 150px;
+  color: var(--main-secondary-color);
+}
+
+.title {
+  color: var(--main-primary-color);
 }
 
 .currentHighScore {

@@ -21,18 +21,6 @@ export enum TetrisFigureType {
   Z = "Z",
 }
 
-export enum TetrisKeyCode {
-  Left = "KeyA",
-  LeftArrow = "ArrowLeft",
-  Right = "KeyD",
-  RightArrow = "ArrowRight",
-  Down = "KeyS",
-  DownArrow = "ArrowDown",
-  Rotate = "KeyW",
-  RotateArrow = "ArrowUp",
-  Space = "Space",
-}
-
 export type NumberOfFigures = {
   [key in TetrisFigureType]: number;
 };

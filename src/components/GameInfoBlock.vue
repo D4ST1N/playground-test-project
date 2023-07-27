@@ -15,12 +15,18 @@ function openGame() {
   <v-card class="" width="300">
     <v-img :src="props.gameInfo.cover" height="200px" cover></v-img>
 
-    <v-card-title>
+    <v-card-title :class="$style.gameName">
       {{ props.gameInfo.name }}
     </v-card-title>
 
     <v-card-actions>
-      <v-btn :disabled="!props.gameInfo.implemented" color="primary" @click="openGame">Play</v-btn>
+      <v-btn
+        :disabled="!props.gameInfo.implemented"
+        color="var(--main-primary-color)"
+        @click="openGame"
+      >
+        Play
+      </v-btn>
 
       <v-spacer></v-spacer>
     </v-card-actions>
@@ -28,7 +34,7 @@ function openGame() {
     <v-expand-transition>
       <div>
         <v-divider></v-divider>
-        <v-card-text>
+        <v-card-text :class="$style.gameDescription">
           {{ props.gameInfo.description }}
         </v-card-text>
       </div>
@@ -37,30 +43,11 @@ function openGame() {
 </template>
 
 <style lang="scss" module>
-.gameInfo {
-  width: 260px;
-  padding: 12px 16px;
-  background-color: rgba(38, 50, 56, 0.8);
-  border-radius: 6px;
-  display: flex;
-  flex-direction: column;
-}
-
 .gameName {
-  color: #fff;
-  margin-bottom: 16px;
-}
-
-.gameContent {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
-  flex-grow: 1;
+  color: var(--main-primary-color);
 }
 
 .gameDescription {
-  color: #fff;
+  color: var(--main-secondary-color);
 }
 </style>

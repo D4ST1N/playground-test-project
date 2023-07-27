@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import { computed, ref, watch, StyleValue, VNode } from "vue";
 import { config } from "@/helpers/games/sudoku/gameConfig";
 import { getAllowedNumbers, getCellAreaCells } from "@/helpers/games/sudoku/helpers";
 import { HTMLElementWithVNode, SudokuArea } from "@/helpers/games/sudoku/types";
+import { GameStatus } from "@/helpers/generalTypes";
 import { useSudokuStore } from "@/store/games/sudoku";
-import { computed, ref, watch, StyleValue, VNode } from "vue";
 
 const props = defineProps<{
   value: number | null;
@@ -26,15 +27,19 @@ const timeoutId = ref<number | null>(null);
 const cellStyles = {
   width: `${config.cellSize}px`,
   height: `${config.cellSize}px`,
-  borderLeft: props.cellIndex % 3 === 0 ? "3px solid #000" : "1px solid #000",
-  borderRight: (props.cellIndex + 1) % 9 === 0 ? "3px solid #000" : "none",
-  borderTop: ((props.cellIndex / 9) | 0) % 3 === 0 ? "3px solid #000" : "1px solid #000",
-  borderBottom: ((props.cellIndex / 9) | 0) === 8 ? "3px solid #000" : "none",
+  borderLeft: props.cellIndex % 3 === 0 ? "3px solid #fffc" : "1px solid #fff4",
+  borderRight: (props.cellIndex + 1) % 9 === 0 ? "3px solid #fffc" : "none",
+  borderTop: ((props.cellIndex / 9) | 0) % 3 === 0 ? "3px solid #fffc" : "1px solid #fff4",
+  borderBottom: ((props.cellIndex / 9) | 0) === 8 ? "3px solid #fffc" : "none",
 };
 
 const { left, right, top, bottom, topLeft, topRight, bottomLeft, bottomRight } = getCellAreaCells(
   props.cellIndex,
 );
+const withTop = top && props.cellArea.cells.includes(top);
+const withBottom = bottom && props.cellArea.cells.includes(bottom);
+const withLeft = left && props.cellArea.cells.includes(left);
+const withRight = right && props.cellArea.cells.includes(right);
 const topLeftCorner = !!(
   left &&
   top &&
@@ -107,6 +112,12 @@ sudokuStore.$onAction(({ name, args: [_, value], after }) => {
 function onInput(e: Event) {
   const target = e.target as HTMLInputElement;
   let value = target.value;
+
+  if (sudokuStore.status !== GameStatus.Playing) {
+    e.preventDefault();
+    target.value = "";
+    return;
+  }
 
   if (Number.isNaN(parseInt(value))) {
     e.preventDefault();
@@ -273,8 +284,24 @@ function onMouseUp(e: MouseEvent) {
         {{ isShowedInfoNumber(number) ? number : "" }}
       </div>
     </div>
-    <div :class="{ [$style.area]: true, [$style.highlightedArea]: isAreaHighlighted }">
-      <div :class="$style.areaRegion" :style="calculateAreaStyles()"></div>
+    <div
+      :class="{
+        [$style.area]: true,
+        [$style.highlightedArea]: isAreaHighlighted,
+      }"
+    >
+      <div
+        :class="{
+          [$style.areaRegion]: true,
+          [$style.withTop]: withTop && !withBottom,
+          [$style.withBottom]: withBottom && !withTop,
+          [$style.withLeft]: withLeft && !withRight,
+          [$style.withRight]: withRight && !withLeft,
+          [$style.withHorizontal]: withLeft && withRight,
+          [$style.withVertical]: withTop && withBottom,
+        }"
+        :style="calculateAreaStyles()"
+      ></div>
       <div v-if="topLeftCorner" :class="[$style.areaRegion, $style.topLeftCorner]"></div>
       <div v-if="topRightCorner" :class="[$style.areaRegion, $style.topRightCorner]"></div>
       <div v-if="bottomLeftCorner" :class="[$style.areaRegion, $style.bottomLeftCorner]"></div>
@@ -286,34 +313,37 @@ function onMouseUp(e: MouseEvent) {
 
 <style lang="scss" module>
 .cell {
-  border: 1px solid #888c;
+  border: 1px solid #fff5;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-weight: 200;
+  font-weight: 300;
   position: relative;
 }
 
 .initial {
   font-weight: bold;
+
+  input {
+    opacity: 1;
+  }
 }
 
 .cellDisabled {
   cursor: pointer;
 
   input {
-    color: #fff;
     pointer-events: none;
   }
 }
 
 .highlighted {
-  background-color: #9beaf84d;
+  background-color: rgb(228 214 187 / 15%);
 }
 
 .highlightedNumber {
   input {
-    color: #1a46d7;
+    color: #cb952f;
   }
 }
 
@@ -325,30 +355,23 @@ function onMouseUp(e: MouseEvent) {
 }
 
 .cellValue {
-  font-size: 50px;
+  font-size: 40px;
   max-width: 100%;
   height: 100%;
   text-align: center;
-  color: #fff;
+  opacity: 0.75;
+  color: var(--main-secondary-color);
   cursor: pointer;
 
   &:focus {
     outline: none;
-    background-color: rgba(155, 234, 248, 0.8);
+    background: radial-gradient(
+      circle,
+      rgba(210, 182, 129, 0) 0%,
+      rgba(210, 182, 129, 0) 50%,
+      rgba(210, 182, 129, 0.6) 100%
+    );
   }
-}
-
-.addInfo {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 20px;
-  height: 20px;
-  font-size: 24px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
 }
 
 .infoNumberContainer {
@@ -376,14 +399,14 @@ function onMouseUp(e: MouseEvent) {
 .infoNumber {
   width: 24px;
   height: 24px;
-  border: 1px solid #fff;
+  border: 1px solid var(--main-primary-color);
   display: flex;
   font-size: 18px;
   justify-content: center;
   align-items: center;
-  color: #fff;
+  color: var(--main-secondary-color);
   border-radius: 50%;
-  background-color: #38c3fa;
+  background-color: var(--main-darkest-color);
   pointer-events: all;
   cursor: pointer;
   position: absolute;
@@ -412,8 +435,8 @@ function onMouseUp(e: MouseEvent) {
 }
 
 .showed {
-  background-color: #fff;
-  color: #37474f;
+  background-color: var(--main-secondary-color);
+  color: var(--main-darkest-color);
 }
 
 .disabled {
@@ -452,54 +475,90 @@ function onMouseUp(e: MouseEvent) {
 }
 
 .highlightedArea {
-  background-color: #e69bf84d;
+  background-color: rgb(210 182 129 / 25%);
 }
 
 .areaSum {
   position: absolute;
-  color: #0a091a;
-  top: 3px;
+  color: var(--main-primary-color);
+  top: 8px;
   left: calc(50% - 8px);
   text-align: center;
   font-size: 10px;
-  font-weight: 700;
+  font-weight: 300;
   line-height: 1;
   width: 16px;
 }
 
 .areaRegion {
   position: absolute;
-  width: calc(100% - 4px);
-  height: calc(100% - 4px);
-  top: 2px;
-  left: 2px;
-  border: 1px dashed #fff;
+  width: calc(100% - 8px);
+  height: calc(100% - 8px);
+  top: 4px;
+  left: 4px;
+  border: 1px dashed #fffa;
+}
+
+.withTop {
+  top: auto;
+  bottom: 4px;
+  height: 100%;
+}
+
+.withLeft {
+  left: auto;
+  right: 4px;
+  width: 100%;
+}
+
+.withRight {
+  right: auto;
+  left: 4px;
+  width: 100%;
+}
+
+.withBottom {
+  bottom: auto;
+  top: 4px;
+  height: 100%;
+}
+
+.withHorizontal {
+  left: 0;
+  right: 0;
+  width: 100%;
+}
+
+.withVertical {
+  top: 0;
+  bottom: 0;
+  height: 100%;
 }
 
 .topLeftCorner {
-  right: calc(100% - 3px);
-  bottom: calc(100% - 3px);
+  right: calc(100% - 5px);
+  bottom: calc(100% - 5px);
   top: auto;
   left: auto;
 }
 
 .topRightCorner {
-  left: calc(100% - 3px);
-  bottom: calc(100% - 3px);
+  left: calc(100% - 5px);
+  bottom: calc(100% - 5px);
   top: auto;
   right: auto;
 }
 
 .bottomLeftCorner {
-  right: calc(100% - 3px);
-  top: calc(100% - 3px);
+  right: calc(100% - 5px);
+  top: calc(100% - 5px);
   bottom: auto;
   left: auto;
 }
 
 .bottomRightCorner {
-  left: calc(100% - 3px);
-  top: calc(100% - 3px);
+  left: calc(100% - 5px);
+  top: calc(100% - 5px);
   bottom: auto;
   right: auto;
 }

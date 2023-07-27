@@ -2,7 +2,7 @@
 
 <template>
   <div :class="$style.nextFigurePanel">
-    <h2>Next figure</h2>
+    <h2 :class="$style.title">Next</h2>
     <slot />
   </div>
 </template>
@@ -13,7 +13,11 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 10px;
-  width: 200px;
-  height: 140px;
+  width: 140px;
+  height: 90px;
+}
+
+.title {
+  color: var(--main-primary-color);
 }
 </style>

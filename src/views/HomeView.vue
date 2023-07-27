@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import GamesList from '@/components/GamesList.vue';
+import GamesList from "@/components/GamesList.vue";
+import PageLayout from "@/components/UI/PageLayout.vue";
 </script>
 
 <template>
-  <main>
+  <PageLayout :header="false">
     <GamesList />
-  </main>
+  </PageLayout>
 </template>

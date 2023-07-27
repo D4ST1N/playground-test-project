@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-
+import StyledTitle from "@/components/UI/StyledTitle.vue";
 import { GameFieldOptions } from "@/helpers/games/minesweeper/types";
 
 const props = defineProps<{
@@ -66,8 +66,10 @@ function validateNumberOfMines(value: number) {
 
 <template>
   <v-dialog :model-value="props.showModal" width="600" :persistent="true">
-    <v-card>
-      <v-card-title class="text-h5"> Custom game configuration </v-card-title>
+    <v-card color="var(--main-darkest-color)">
+      <v-card-title class="pt-4">
+        <StyledTitle>Custom game configuration</StyledTitle>
+      </v-card-title>
       <v-card-text>
         <v-container>
           <v-row>
@@ -79,6 +81,8 @@ function validateNumberOfMines(value: number) {
                 hint="Range: 9 - 30"
                 persistent-hint
                 required
+                base-color="var(--main-secondary-color)"
+                color="var(--main-primary-color)"
                 :rules="[validateWidth]"
               ></v-text-field>
             </v-col>
@@ -92,6 +96,8 @@ function validateNumberOfMines(value: number) {
                 hint="Range: 9 - 20"
                 persistent-hint
                 required
+                base-color="var(--main-secondary-color)"
+                color="var(--main-primary-color)"
                 :rules="[validateHeight]"
               ></v-text-field>
             </v-col>
@@ -105,18 +111,23 @@ function validateNumberOfMines(value: number) {
                 :hint="`Range: 10 - ${maxNumberOfMines}`"
                 persistent-hint
                 required
+                base-color="var(--main-secondary-color)"
+                color="var(--main-primary-color)"
                 :rules="[validateNumberOfMines]"
               ></v-text-field>
             </v-col>
           </v-row>
         </v-container>
       </v-card-text>
-      <v-card-actions class="d-flex justify-end">
-        <v-btn color="amber-darken-2" variant="outlined" @click="closeDialog">Cancel</v-btn>
+      <v-card-actions :class="$style.buttons">
+        <v-btn color="var(--main-secondary-color)" variant="outlined" @click="closeDialog">
+          Close
+        </v-btn>
         <v-btn
           :disabled="!validConfiguration"
-          color="blue-darken-4"
-          variant="flat"
+          color="var(--main-secondary-color)"
+          variant="elevated"
+          :class="$style.button"
           @click="submitDialog"
         >
           Start
@@ -126,4 +137,13 @@ function validateNumberOfMines(value: number) {
   </v-dialog>
 </template>
 
-<style lang="scss" module></style>
+<style lang="scss" module>
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+}
+.button {
+  color: var(--main-darker-color);
+}
+</style>

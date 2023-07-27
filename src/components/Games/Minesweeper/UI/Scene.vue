@@ -1,36 +1,25 @@
 <script setup lang="ts">
 import { computed } from "vue";
-
 import { useMinesweeperStore } from "@/store/games/minesweeper";
 import Field from "@/components/Games/Minesweeper/Game/Field.vue";
-import InfoPanel from "@/components/Games/Minesweeper/UI/InfoPanel.vue";
-import NewGameStart from "@/components/Games/Minesweeper/UI/NewGameStart.vue";
-import Notifications from "@/components/Games/Minesweeper/UI/Notifications.vue";
-import HighScorePanel from "@/components/Games/Minesweeper/UI/HighScorePanel.vue";
 import { DefaultFieldSize } from "@/helpers/games/minesweeper/types";
 import { GameStatus } from "@/helpers/generalTypes";
 import Confetti from "@/components/UI/Confetti.vue";
 
-const store = useMinesweeperStore();
+const minesweeperStore = useMinesweeperStore();
 
-const isDefaultFieldSize = computed(() => store.sizeSelected in DefaultFieldSize);
+const isDefaultFieldSize = computed(() => minesweeperStore.sizeSelected in DefaultFieldSize);
 </script>
 
 <template>
   <div class="pa-3">
-    <div v-if="store.field" :class="$style.gameWrapper">
+    <div v-if="minesweeperStore.field" :class="$style.gameWrapper">
       <div :class="{ [$style.fieldWrapper]: isDefaultFieldSize }">
-        <InfoPanel />
         <Field />
       </div>
-      <div v-if="isDefaultFieldSize" :class="$style.highScoreWrapper">
-        <HighScorePanel />
-      </div>
     </div>
-    <NewGameStart v-else />
   </div>
-  <Notifications />
-  <Confetti v-if="store.status === GameStatus.Victory" />
+  <Confetti v-if="minesweeperStore.status === GameStatus.Victory" />
 </template>
 
 <style lang="scss" module>
@@ -39,10 +28,6 @@ const isDefaultFieldSize = computed(() => store.sizeSelected in DefaultFieldSize
   align-self: flex-start;
   justify-content: center;
   gap: 30px;
-}
-
-.fieldWrapper {
-  margin-left: 180px;
 }
 
 .highScoreWrapper {

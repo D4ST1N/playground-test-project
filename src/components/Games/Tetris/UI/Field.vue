@@ -11,5 +11,6 @@
   display: flex;
   justify-content: center;
   width: 420px;
+  margin-left: 160px;
 }
 </style>

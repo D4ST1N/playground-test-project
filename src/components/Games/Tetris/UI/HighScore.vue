@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-
 import { useTetrisStore } from "@/store/games/tetris";
 
 const tetrisStore = useTetrisStore();
@@ -9,7 +8,7 @@ const { scores, current } = storeToRefs(tetrisStore);
 
 <template>
   <div :class="$style.highScore">
-    <h2>High Score</h2>
+    <h2 :class="$style.title">High Score</h2>
     <div v-for="score in scores" :class="{ [$style.currentHighScore]: score.id === current }">
       <b>{{ score.playerName }}:&nbsp;</b>
       <span>{{ score.score }}</span>
@@ -21,15 +20,18 @@ const { scores, current } = storeToRefs(tetrisStore);
 .highScore {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: flex-start;
   gap: 10px;
-  width: 200px;
-  min-height: 210px;
+  color: var(--main-secondary-color);
+}
+
+.title {
+  color: var(--main-primary-color);
 }
 
 .currentHighScore {
   font-size: 1.5rem;
-  color: #d3f7ff;
+  color: var(--main-primary-color);
   position: relative;
 
   &::before {

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-
 import { IGameConfig } from "@/helpers/games/twentyFortyEight/gameConfig";
 import {
   sizeOptions,
@@ -10,6 +9,7 @@ import {
   tileGapOptions,
   tileRoundSizeOptions,
 } from "@/helpers/games/twentyFortyEight/entities";
+import StyledTitle from "@/components/UI/StyledTitle.vue";
 
 const props = defineProps<{
   showModal: boolean;
@@ -58,8 +58,10 @@ function submitDialog() {
 
 <template>
   <v-dialog :model-value="props.showModal" width="800" :persistent="true">
-    <v-card>
-      <v-card-title class="text-h5"> Custom game configuration </v-card-title>
+    <v-card color="var(--main-darkest-color)">
+      <v-card-title class="pt-4">
+        <StyledTitle>Custom game configuration</StyledTitle>
+      </v-card-title>
       <v-card-text>
         <v-container>
           <v-row>
@@ -69,6 +71,8 @@ function submitDialog() {
                 :items="sizeOptions"
                 density="comfortable"
                 label="Field Size"
+                base-color="var(--main-secondary-color)"
+                color="var(--main-primary-color)"
               ></v-select>
             </v-col>
             <v-col cols="4">
@@ -77,6 +81,8 @@ function submitDialog() {
                 :items="startTilesOptions"
                 density="comfortable"
                 label="Number of tiles filled at start"
+                base-color="var(--main-secondary-color)"
+                color="var(--main-primary-color)"
               ></v-select>
             </v-col>
             <v-col cols="4">
@@ -85,6 +91,8 @@ function submitDialog() {
                 :items="fourSpawnChanceOptions"
                 density="comfortable"
                 label="Chance of spawning 4"
+                base-color="var(--main-secondary-color)"
+                color="var(--main-primary-color)"
                 item-title="label"
                 item-value="value"
               ></v-select>
@@ -92,23 +100,29 @@ function submitDialog() {
           </v-row>
           <v-row>
             <v-col cols="12">
-              <h4>Field view customization</h4>
+              <StyledTitle>Field view customization</StyledTitle>
             </v-col>
             <v-col cols="6">
               <v-select
                 v-model="gameConfiguration.tileSize"
                 :items="tileSizeOptions"
                 label="Tile Size"
+                base-color="var(--main-secondary-color)"
+                color="var(--main-primary-color)"
               ></v-select>
               <v-select
                 v-model="gameConfiguration.tileGap"
                 :items="tileGapOptions"
                 label="Gap between tiles"
+                base-color="var(--main-secondary-color)"
+                color="var(--main-primary-color)"
               ></v-select>
               <v-select
                 v-model="gameConfiguration.tileRoundSize"
                 :items="tileRoundSizeOptions"
                 label="Tile rounded border radius"
+                base-color="var(--main-secondary-color)"
+                color="var(--main-primary-color)"
               ></v-select>
             </v-col>
             <v-col cols="6">
@@ -119,9 +133,18 @@ function submitDialog() {
           </v-row>
         </v-container>
       </v-card-text>
-      <v-card-actions class="d-flex justify-end">
-        <v-btn color="amber-darken-2" variant="outlined" @click="closeDialog">Cancel</v-btn>
-        <v-btn color="blue-darken-4" variant="flat" @click="submitDialog"> Start </v-btn>
+      <v-card-actions :class="$style.buttons">
+        <v-btn color="var(--main-secondary-color)" variant="outlined" @click="closeDialog">
+          Close
+        </v-btn>
+        <v-btn
+          color="var(--main-secondary-color)"
+          variant="elevated"
+          :class="$style.button"
+          @click="submitDialog"
+        >
+          Start
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -137,5 +160,14 @@ function submitDialog() {
 
 .preview {
   background-color: #cdc1b4;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+}
+.button {
+  color: var(--main-darker-color);
 }
 </style>

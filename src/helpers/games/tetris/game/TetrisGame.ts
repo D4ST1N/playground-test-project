@@ -17,10 +17,9 @@ import {
   TetrisFigureType,
   TetrisGameDIfficulty,
   TetrisGameField,
-  TetrisKeyCode,
 } from "@/helpers/games/tetris/types";
 import { brightenColor, soundFabric } from "@/helpers/generalHelpers";
-import { GameStatus, Coordinates, HexCode } from "@/helpers/generalTypes";
+import { GameStatus, Coordinates, HexCode, KeyboardKeyCode } from "@/helpers/generalTypes";
 import { config } from "@/helpers/games/tetris/gameConfig";
 import { useUserStore } from "@/store/user";
 import { useTetrisStore } from "@/store/games/tetris";
@@ -34,7 +33,7 @@ const soundEffects = soundFabric([
   {
     key: "move",
     sound: "/src/assets/sounds/games/tetris/move.m4a",
-    volume: 0.5,
+    volume: 0.33,
   },
   {
     key: "rotate",
@@ -53,68 +52,17 @@ const soundEffects = soundFabric([
   },
 ]);
 
-export interface TetrisGame {
-  canvas: HTMLCanvasElement;
-  ctx: CanvasRenderingContext2D;
-  nextFigureCanvas: HTMLCanvasElement;
-  nextFigureCtx: CanvasRenderingContext2D;
-  scorePanelCanvas: HTMLCanvasElement;
-  scorePanelCtx: CanvasRenderingContext2D;
-  field: TetrisGameField;
-  currentFigure: TetrisFigure;
-  nextFigureType: TetrisFigureType;
-  status: GameStatus;
-  score: number;
-  cellSize: number;
-  fieldHeight: number;
-  intervalId: number;
-
-  start(): void;
-  restart(): void;
-  startFigureMove(): void;
-  stopFigureMove(): void;
-  moveFigure(): void;
-  placeFigure(): void;
-  handleMovement(event: KeyboardEvent): void;
-  togglePause(): void;
-  moveFigureLeft(): void;
-  moveFigureRight(): void;
-  checkIntersections(figureCells: TetrisFieldCell[][], figurePosition: Coordinates): boolean;
-  rotateClockwise(): void;
-  checkFilledRows(): void;
-  updateScore({
-    row,
-    filledRowsCount,
-    figure,
-  }: {
-    row: number;
-    filledRowsCount?: number;
-    figure?: TetrisFigure | null;
-  }): void;
-  moveEmptyRowsDown(): void;
-  render(): void;
-  renderPausedText(): void;
-  renderDefeatText(): void;
-  renderCell({ x, y }: Coordinates, color: HexCode): void;
-  renderEmptyCell({ x, y }: Coordinates): void;
-  renderNextFigure(figure: TetrisFigure): void;
-  renderScore(addition?: number): void;
-}
-
 export interface TetrisGamePayload {
   canvas: HTMLCanvasElement;
   nextFigureCanvas: HTMLCanvasElement;
-  scorePanelCanvas: HTMLCanvasElement;
   cellSize?: number;
 }
 
-class TetrisImplementation implements TetrisGame {
+export class TetrisGame {
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
   nextFigureCanvas: HTMLCanvasElement;
   nextFigureCtx: CanvasRenderingContext2D;
-  scorePanelCanvas: HTMLCanvasElement;
-  scorePanelCtx: CanvasRenderingContext2D;
   field: TetrisGameField = generateField(config.fieldWidth, config.fieldHeight);
   currentFigure: TetrisFigure = getRandomFigure();
   nextFigureType: TetrisFigureType = getRandomFigureType();
@@ -131,13 +79,11 @@ class TetrisImplementation implements TetrisGame {
   scoreId: string;
   boundedHandleMovement: (event: KeyboardEvent) => void;
 
-  constructor({ canvas, nextFigureCanvas, scorePanelCanvas }: TetrisGamePayload) {
+  constructor({ canvas, nextFigureCanvas }: TetrisGamePayload) {
     this.canvas = canvas;
     this.nextFigureCanvas = nextFigureCanvas;
     this.ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
     this.nextFigureCtx = nextFigureCanvas.getContext("2d") as CanvasRenderingContext2D;
-    this.scorePanelCanvas = scorePanelCanvas;
-    this.scorePanelCtx = scorePanelCanvas.getContext("2d") as CanvasRenderingContext2D;
 
     const [fieldColumn] = this.field;
     this.fieldHeight = fieldColumn.length;
@@ -191,10 +137,10 @@ class TetrisImplementation implements TetrisGame {
     this.currentFigure = getRandomFigure();
     this.nextFigureType = getRandomFigureType();
     this.render();
-    this.renderScore();
     this.renderNextFigure(figuresMapping[this.nextFigureType]);
     this.tetrisStore.addNewFigure(this.currentFigure.type);
     this.tetrisStore.startMusic();
+    this.tetrisStore.setGameStatus(this.status);
 
     this.startFigureMove();
   }
@@ -204,6 +150,7 @@ class TetrisImplementation implements TetrisGame {
     this.score = 0;
     this.scoreId = uuidv4();
     this.tetrisStore.setCurrentGameId(this.scoreId);
+    this.tetrisStore.setScore(this.score, this.scoreId);
     this.tetrisStore.reset();
     this.start();
   }
@@ -235,7 +182,7 @@ class TetrisImplementation implements TetrisGame {
 
     if (yWithOffset >= this.fieldHeight) {
       this.placeFigure();
-      soundEffects.place.play();
+      soundEffects.place.playMultiple();
       return;
     }
 
@@ -251,7 +198,7 @@ class TetrisImplementation implements TetrisGame {
 
       if (nextCell.isFilled) {
         this.placeFigure();
-        soundEffects.place.play();
+        soundEffects.place.playMultiple();
 
         return;
       }
@@ -273,9 +220,7 @@ class TetrisImplementation implements TetrisGame {
     });
 
     if (this.currentFigure.coordinates.y < 0) {
-      this.status = GameStatus.Defeat;
-      this.tetrisStore.stopMusic();
-      soundEffects.lose.play();
+      this.loseGame();
 
       return;
     }
@@ -294,26 +239,33 @@ class TetrisImplementation implements TetrisGame {
     this.renderNextFigure(figuresMapping[this.nextFigureType]);
   }
 
+  loseGame() {
+    this.status = GameStatus.Defeat;
+    this.tetrisStore.setGameStatus(this.status);
+    this.tetrisStore.stopMusic();
+    soundEffects.lose.play();
+  }
+
   handleMovement(e: KeyboardEvent) {
     switch (e.code) {
-      case TetrisKeyCode.Left:
-      case TetrisKeyCode.LeftArrow:
+      case KeyboardKeyCode.Left:
+      case KeyboardKeyCode.ArrowLeft:
         this.moveFigureLeft();
         break;
-      case TetrisKeyCode.Right:
-      case TetrisKeyCode.RightArrow:
+      case KeyboardKeyCode.Right:
+      case KeyboardKeyCode.ArrowRight:
         this.moveFigureRight();
         break;
-      case TetrisKeyCode.Down:
-      case TetrisKeyCode.DownArrow:
+      case KeyboardKeyCode.Down:
+      case KeyboardKeyCode.ArrowDown:
         this.moveFigure();
-        soundEffects.move.playMultiple();
+        if (this.status === GameStatus.Playing) soundEffects.move.playMultiple();
         break;
-      case TetrisKeyCode.Rotate:
-      case TetrisKeyCode.RotateArrow:
+      case KeyboardKeyCode.Up:
+      case KeyboardKeyCode.ArrowUp:
         this.rotateClockwise();
         break;
-      case TetrisKeyCode.Space: {
+      case KeyboardKeyCode.Space: {
         this.togglePause();
         break;
       }
@@ -327,11 +279,13 @@ class TetrisImplementation implements TetrisGame {
     switch (this.status) {
       case GameStatus.Playing: {
         this.status = GameStatus.Paused;
+        this.tetrisStore.setGameStatus(this.status);
         this.stopFigureMove(false);
         break;
       }
       case GameStatus.Paused: {
         this.status = GameStatus.Playing;
+        this.tetrisStore.setGameStatus(this.status);
         this.startFigureMove();
         break;
       }
@@ -510,6 +464,7 @@ class TetrisImplementation implements TetrisGame {
       this.rowsFilled += filledRowsCount;
       const baseFilledRowsScore = (2 ** filledRowsCount - 1) * 100;
       rowsScore = Math.round(baseFilledRowsScore * rowMultiplier * difficultyMultiplier);
+      this.tetrisStore.increaseClearedRows(filledRowsCount);
       this.increaseDifficulty();
     }
 
@@ -520,23 +475,28 @@ class TetrisImplementation implements TetrisGame {
 
     this.score += figureScore;
     this.score += rowsScore;
-    this.renderScore(figureScore + rowsScore);
     this.tetrisStore.setScore(this.score, this.scoreId);
   }
 
   increaseDifficulty() {
     if (this.difficulty === TetrisGameDIfficulty.Hard) return;
 
-    if (this.difficulty === TetrisGameDIfficulty.Easy && this.rowsFilled > 15) {
+    if (
+      this.difficulty === TetrisGameDIfficulty.Easy &&
+      this.rowsFilled >= config.gameLevelRows[2]
+    ) {
       this.difficulty = TetrisGameDIfficulty.Medium;
       this.tetrisStore.increaseDifficulty();
-      this.moveSpeed = config.figureMoveInterval * 0.8;
+      this.moveSpeed = config.figureMoveInterval * config.moveIntervalIncrease[2];
       return;
     }
 
-    if (this.difficulty === TetrisGameDIfficulty.Medium && this.rowsFilled > 50) {
+    if (
+      this.difficulty === TetrisGameDIfficulty.Medium &&
+      this.rowsFilled >= config.gameLevelRows[3]
+    ) {
       this.difficulty = TetrisGameDIfficulty.Hard;
-      this.moveSpeed = config.figureMoveInterval * 0.5;
+      this.moveSpeed = config.figureMoveInterval * config.moveIntervalIncrease[3];
       this.tetrisStore.increaseDifficulty();
     }
   }
@@ -716,31 +676,4 @@ class TetrisImplementation implements TetrisGame {
       });
     });
   }
-
-  renderScore(addition?: number) {
-    this.scorePanelCtx.clearRect(
-      0,
-      0,
-      this.scorePanelCtx.canvas.width,
-      this.scorePanelCtx.canvas.height,
-    );
-    this.scorePanelCtx.font = "normal 36px Arial";
-    this.scorePanelCtx.textAlign = "right";
-    this.scorePanelCtx.strokeStyle = "#fff";
-    this.scorePanelCtx.strokeText(`${this.score}`, this.scorePanelCanvas.width, 30);
-
-    if (addition) {
-      this.scorePanelCtx.font = "normal 24px Arial";
-      this.scorePanelCtx.fillStyle = "#fff";
-      this.scorePanelCtx.fillText(`+${addition}`, this.scorePanelCanvas.width, 60);
-    }
-  }
-}
-
-export function createTetrisGame({
-  canvas,
-  nextFigureCanvas,
-  scorePanelCanvas,
-}: TetrisGamePayload): TetrisGame {
-  return new TetrisImplementation({ canvas, nextFigureCanvas, scorePanelCanvas });
 }

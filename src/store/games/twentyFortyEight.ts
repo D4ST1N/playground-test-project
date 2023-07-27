@@ -1,9 +1,10 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { v4 as uuidv4 } from "uuid";
-
 import { useUserStore } from "@/store/user";
 import { GameStatus } from "@/helpers/generalTypes";
+import { TwentyFortyEight } from "@/components/Games/TwentyFortyEight/Game/TwentyFortyEight";
+import { IGameConfig, config as gameConfig } from "@/helpers/games/twentyFortyEight/gameConfig";
 
 export interface GameHighScore {
   id: string;
@@ -20,6 +21,30 @@ export const useTwentyFortyEightStore = defineStore(
     const current = ref<string>("");
     const status = ref<GameStatus>(GameStatus.NotStarted);
     const currentScore = ref<number>(0);
+    const selectedConfig = ref<IGameConfig>(gameConfig);
+    const maximalNumber = ref<number>(0);
+    const game = ref<TwentyFortyEight | null>(null);
+
+    function init(canvas: HTMLCanvasElement) {
+      game.value = new TwentyFortyEight(canvas);
+    }
+
+    function start(config?: Partial<IGameConfig>) {
+      if (!game.value) return;
+
+      if (config) {
+        selectedConfig.value = { ...gameConfig, ...config };
+        game.value.updateConfig(config);
+      }
+
+      game.value.start();
+    }
+
+    function restart() {
+      if (!game.value) return;
+
+      game.value.restart();
+    }
 
     function setCurrentGameId(currentId: string) {
       current.value = currentId;
@@ -33,6 +58,7 @@ export const useTwentyFortyEightStore = defineStore(
       if (!userStore.user) return;
 
       currentScore.value += scoreAddition;
+      maximalNumber.value = Math.max(maximalNumber.value, scoreAddition);
 
       if (isCustom) return;
 
@@ -68,6 +94,11 @@ export const useTwentyFortyEightStore = defineStore(
       current,
       currentScore,
       status,
+      selectedConfig,
+      maximalNumber,
+      init,
+      start,
+      restart,
       updateStatus,
       setCurrentGameId,
       setScore,
