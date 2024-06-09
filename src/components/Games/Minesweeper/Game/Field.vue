@@ -36,9 +36,9 @@ function handleRightClick(x: number, y: number) {
         v-for="(fieldCell, fieldCellIndex) in gameFieldRow"
         :key="fieldCellIndex"
         :field-cell="fieldCell"
-        @left-click="() => handleLeftClick(index, fieldCellIndex)"
-        @middle-click="() => handleMiddleClick(index, fieldCellIndex)"
-        @right-click="() => handleRightClick(index, fieldCellIndex)"
+        @left-click="handleLeftClick(index, fieldCellIndex)"
+        @middle-click="handleMiddleClick(index, fieldCellIndex)"
+        @right-click="handleRightClick(index, fieldCellIndex)"
       />
     </div>
   </div>

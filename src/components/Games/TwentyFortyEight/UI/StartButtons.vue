@@ -35,9 +35,10 @@ function startCustomGame(config: Partial<IGameConfig>) {
     <v-btn
       :disabled="props.disabled"
       variant="outlined"
+      width="220"
       @click="startGame"
     >
-      <template v-slot:prepend>
+      <template #prepend>
         <v-icon size="medium">mdi-fire</v-icon>
       </template>
       Standard
@@ -45,9 +46,10 @@ function startCustomGame(config: Partial<IGameConfig>) {
     <v-btn
       :disabled="props.disabled"
       variant="outlined"
+      width="220"
       @click="openModal"
     >
-      <template v-slot:prepend>
+      <template #prepend>
         <v-icon size="medium">mdi-help</v-icon>
       </template>
       Custom settings

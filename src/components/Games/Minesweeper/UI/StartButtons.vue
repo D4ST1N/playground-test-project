@@ -40,9 +40,10 @@ function startGameWithDefaultConfiguration(size: DefaultFieldSize) {
     <v-btn
       :disabled="props.disabled"
       variant="outlined"
-      @click="() => startGameWithDefaultConfiguration(DefaultFieldSize.Small)"
+      width="140"
+      @click="startGameWithDefaultConfiguration(DefaultFieldSize.Small)"
     >
-      <template v-slot:prepend>
+      <template #prepend>
         <v-icon size="x-small">mdi-fire</v-icon>
       </template>
       Small
@@ -50,9 +51,10 @@ function startGameWithDefaultConfiguration(size: DefaultFieldSize) {
     <v-btn
       :disabled="props.disabled"
       variant="outlined"
-      @click="() => startGameWithDefaultConfiguration(DefaultFieldSize.Medium)"
+      width="140"
+      @click="startGameWithDefaultConfiguration(DefaultFieldSize.Medium)"
     >
-      <template v-slot:prepend>
+      <template #prepend>
         <v-icon size="medium">mdi-fire</v-icon>
       </template>
       Medium
@@ -60,9 +62,10 @@ function startGameWithDefaultConfiguration(size: DefaultFieldSize) {
     <v-btn
       :disabled="props.disabled"
       variant="outlined"
-      @click="() => startGameWithDefaultConfiguration(DefaultFieldSize.Expert)"
+      width="140"
+      @click="startGameWithDefaultConfiguration(DefaultFieldSize.Expert)"
     >
-      <template v-slot:prepend>
+      <template #prepend>
         <v-icon size="x-large">mdi-fire</v-icon>
       </template>
       Expert
@@ -70,9 +73,10 @@ function startGameWithDefaultConfiguration(size: DefaultFieldSize) {
     <v-btn
       :disabled="props.disabled"
       variant="outlined"
+      width="140"
       @click="showModal"
     >
-      <template v-slot:prepend>
+      <template #prepend>
         <v-icon size="medium">mdi-help</v-icon>
       </template>
       Custom

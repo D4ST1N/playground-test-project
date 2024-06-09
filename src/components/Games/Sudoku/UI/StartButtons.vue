@@ -19,9 +19,10 @@ function startGame(difficulty: GameDifficulty) {
     <v-btn
       :disabled="props.disabled"
       variant="outlined"
-      @click="() => startGame(GameDifficulty.Easy)"
+      width="140"
+      @click="startGame(GameDifficulty.Easy)"
     >
-      <template v-slot:prepend>
+      <template #prepend>
         <v-icon size="x-small">mdi-fire</v-icon>
       </template>
       Easy
@@ -29,9 +30,10 @@ function startGame(difficulty: GameDifficulty) {
     <v-btn
       :disabled="props.disabled"
       variant="outlined"
-      @click="() => startGame(GameDifficulty.Medium)"
+      width="140"
+      @click="startGame(GameDifficulty.Medium)"
     >
-      <template v-slot:prepend>
+      <template #prepend>
         <v-icon size="small">mdi-fire</v-icon>
       </template>
       Medium
@@ -39,9 +41,10 @@ function startGame(difficulty: GameDifficulty) {
     <v-btn
       :disabled="props.disabled"
       variant="outlined"
-      @click="() => startGame(GameDifficulty.Hard)"
+      width="140"
+      @click="startGame(GameDifficulty.Hard)"
     >
-      <template v-slot:prepend>
+      <template #prepend>
         <v-icon size="medium">mdi-fire</v-icon>
       </template>
       Hard
@@ -49,9 +52,10 @@ function startGame(difficulty: GameDifficulty) {
     <v-btn
       :disabled="props.disabled"
       variant="outlined"
-      @click="() => startGame(GameDifficulty.Expert)"
+      width="140"
+      @click="startGame(GameDifficulty.Expert)"
     >
-      <template v-slot:prepend>
+      <template #prepend>
         <v-icon size="x-large">mdi-fire</v-icon>
       </template>
       Expert

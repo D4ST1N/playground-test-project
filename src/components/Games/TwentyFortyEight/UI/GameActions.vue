@@ -26,7 +26,7 @@ function restart() {
 
 <template>
   <v-btn v-if="gameWon" variant="outlined" @click="continueGame">
-    <template v-slot:prepend>
+    <template #prepend>
       <v-icon>mdi-chevron-right</v-icon>
     </template>
     Continue
@@ -36,7 +36,7 @@ function restart() {
     variant="outlined"
     @click="restart"
   >
-    <template v-slot:prepend>
+    <template #prepend>
       <v-icon>mdi-restart</v-icon>
     </template>
     Restart
@@ -46,7 +46,7 @@ function restart() {
     variant="outlined"
     @click="startNewGame"
   >
-    <template v-slot:prepend>
+    <template #prepend>
       <v-icon>mdi-window-close</v-icon>
     </template>
     Start New Game
