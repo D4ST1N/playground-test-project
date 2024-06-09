@@ -20,8 +20,8 @@ function submitDialog() {
       <v-card-text>Logging out will lead to lose all current game progress</v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="green-darken-1" variant="text" @click="closeDialog"> Cancel </v-btn>
-        <v-btn color="red-darken-1" @click="submitDialog"> Logout </v-btn>
+        <v-btn @click="submitDialog"> Logout </v-btn>
+        <v-btn variant="outlined" @click="closeDialog"> Cancel </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

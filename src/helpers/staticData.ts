@@ -15,6 +15,46 @@ export const games: GameInfo[] = [
   },
   {
     id: uuidv4(),
+    name: GameName.Minesweeper,
+    title: "Minesweeper",
+    path: "minesweeper",
+    description:
+      "Minesweeper is a strategy puzzle game where players navigate a grid, uncovering hidden tiles while avoiding mines by using numerical hints provided by adjacent tiles.",
+    implemented: true,
+    cover: "/src/assets/img/cover/minesweeper.webp",
+  },
+  {
+    id: uuidv4(),
+    name: GameName.Sudoku,
+    title: "Sudoku",
+    path: "sudoku",
+    description:
+      "Sudoku is a popular number puzzle game where players fill a grid with digits, ensuring that each row, column, and subgrid contains all the numbers from 1 to 9 without repetition.",
+    implemented: true,
+    cover: "/src/assets/img/cover/sudoku.avif",
+  },
+  {
+    id: uuidv4(),
+    name: GameName.TwentyFortyEight,
+    title: "2048",
+    path: "twenty-forty-eight",
+    description:
+      "2048 is a addictive puzzle game where players combine numbered tiles by sliding them on a grid, aiming to reach the tile with the value of 2048.",
+    implemented: true,
+    cover: "/src/assets/img/cover/2048.webp",
+  },
+  {
+    id: uuidv4(),
+    name: GameName.Arkanoid,
+    title: "Arkanoid",
+    path: "arkanoid",
+    description:
+      "Arkanoid is a classic arcade game where players control a paddle at the bottom of the screen, bouncing a ball to break bricks and clear levels.",
+    implemented: false,
+    cover: "/src/assets/img/cover/arkanoid.webp",
+  },
+  {
+    id: uuidv4(),
     name: GameName.Snake,
     title: "Snake",
     path: "snake",
@@ -45,36 +85,6 @@ export const games: GameInfo[] = [
   },
   {
     id: uuidv4(),
-    name: GameName.Minesweeper,
-    title: "Minesweeper",
-    path: "minesweeper",
-    description:
-      "Minesweeper is a strategy puzzle game where players navigate a grid, uncovering hidden tiles while avoiding mines by using numerical hints provided by adjacent tiles.",
-    implemented: true,
-    cover: "/src/assets/img/cover/minesweeper.webp",
-  },
-  {
-    id: uuidv4(),
-    name: GameName.Arkanoid,
-    title: "Arkanoid",
-    path: "arkanoid",
-    description:
-      "Arkanoid is a classic arcade game where players control a paddle at the bottom of the screen, bouncing a ball to break bricks and clear levels.",
-    implemented: false,
-    cover: "/src/assets/img/cover/arkanoid.webp",
-  },
-  {
-    id: uuidv4(),
-    name: GameName.Sudoku,
-    title: "Sudoku",
-    path: "sudoku",
-    description:
-      "Sudoku is a popular number puzzle game where players fill a grid with digits, ensuring that each row, column, and subgrid contains all the numbers from 1 to 9 without repetition.",
-    implemented: true,
-    cover: "/src/assets/img/cover/sudoku.avif",
-  },
-  {
-    id: uuidv4(),
     name: GameName.Solitaire,
     title: "Solitaire",
     path: "solitaire",
@@ -82,15 +92,5 @@ export const games: GameInfo[] = [
       "Solitaire is a single-player card game where the goal is to arrange a deck of cards in a specific order by following a set of rules and moves.",
     implemented: false,
     cover: "/src/assets/img/cover/solitaire.png",
-  },
-  {
-    id: uuidv4(),
-    name: GameName.TwentyFortyEight,
-    title: "2048",
-    path: "twenty-forty-eight",
-    description:
-      "2048 is a addictive puzzle game where players combine numbered tiles by sliding them on a grid, aiming to reach the tile with the value of 2048.",
-    implemented: true,
-    cover: "/src/assets/img/cover/2048.webp",
   },
 ];

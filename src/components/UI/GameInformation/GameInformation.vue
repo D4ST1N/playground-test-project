@@ -16,7 +16,7 @@ function closeDialog() {
 <template>
   <v-btn v-if="$slots.content" size="x-large" rounded @click="openDialog" :class="$style.button">
     <v-icon size="x-large">mdi-progress-question</v-icon>
-    <v-tooltip activator="parent" location="left" theme="light">
+    <v-tooltip activator="parent" location="left" theme="dark">
       Show information about the game
     </v-tooltip>
   </v-btn>
@@ -27,7 +27,7 @@ function closeDialog() {
       </v-card-title>
       <slot name="content" />
       <v-card-actions class="d-flex justify-center">
-        <v-btn color="var(--main-primary-color)" variant="outlined" @click="closeDialog">
+        <v-btn variant="outlined" @click="closeDialog">
           Close
         </v-btn>
       </v-card-actions>

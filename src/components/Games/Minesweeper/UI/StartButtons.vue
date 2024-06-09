@@ -40,7 +40,6 @@ function startGameWithDefaultConfiguration(size: DefaultFieldSize) {
     <v-btn
       :disabled="props.disabled"
       variant="outlined"
-      color="var(--main-primary-color)"
       @click="() => startGameWithDefaultConfiguration(DefaultFieldSize.Small)"
     >
       <template v-slot:prepend>
@@ -51,7 +50,6 @@ function startGameWithDefaultConfiguration(size: DefaultFieldSize) {
     <v-btn
       :disabled="props.disabled"
       variant="outlined"
-      color="var(--main-primary-color)"
       @click="() => startGameWithDefaultConfiguration(DefaultFieldSize.Medium)"
     >
       <template v-slot:prepend>
@@ -62,7 +60,6 @@ function startGameWithDefaultConfiguration(size: DefaultFieldSize) {
     <v-btn
       :disabled="props.disabled"
       variant="outlined"
-      color="var(--main-primary-color)"
       @click="() => startGameWithDefaultConfiguration(DefaultFieldSize.Expert)"
     >
       <template v-slot:prepend>
@@ -73,7 +70,6 @@ function startGameWithDefaultConfiguration(size: DefaultFieldSize) {
     <v-btn
       :disabled="props.disabled"
       variant="outlined"
-      color="var(--main-primary-color)"
       @click="showModal"
     >
       <template v-slot:prepend>

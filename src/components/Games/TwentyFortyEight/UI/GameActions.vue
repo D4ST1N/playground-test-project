@@ -25,7 +25,7 @@ function restart() {
 </script>
 
 <template>
-  <v-btn v-if="gameWon" variant="outlined" color="var(--main-primary-color)" @click="continueGame">
+  <v-btn v-if="gameWon" variant="outlined" @click="continueGame">
     <template v-slot:prepend>
       <v-icon>mdi-chevron-right</v-icon>
     </template>
@@ -34,7 +34,6 @@ function restart() {
   <v-btn
     v-if="gameEnded || gameWon"
     variant="outlined"
-    color="var(--main-primary-color)"
     @click="restart"
   >
     <template v-slot:prepend>
@@ -45,7 +44,6 @@ function restart() {
   <v-btn
     v-if="gameStarted"
     variant="outlined"
-    color="var(--main-primary-color)"
     @click="startNewGame"
   >
     <template v-slot:prepend>

@@ -21,6 +21,11 @@ export default createVuetify({
       dark: {
         colors: {
           surface: "#0f0b0c",
+          primary: "#D2B681",
+          secondary: "#E4D6BB",
+          "on-surface": "#E4D6BB",
+          "surface-variant": "#2A1B12",
+          "on-surface-variant": "#E4D6BB",
         },
       },
     },

@@ -19,7 +19,6 @@ function startGame(difficulty: GameDifficulty) {
     <v-btn
       :disabled="props.disabled"
       variant="outlined"
-      color="var(--main-primary-color)"
       @click="() => startGame(GameDifficulty.Easy)"
     >
       <template v-slot:prepend>
@@ -30,7 +29,6 @@ function startGame(difficulty: GameDifficulty) {
     <v-btn
       :disabled="props.disabled"
       variant="outlined"
-      color="var(--main-primary-color)"
       @click="() => startGame(GameDifficulty.Medium)"
     >
       <template v-slot:prepend>
@@ -41,7 +39,6 @@ function startGame(difficulty: GameDifficulty) {
     <v-btn
       :disabled="props.disabled"
       variant="outlined"
-      color="var(--main-primary-color)"
       @click="() => startGame(GameDifficulty.Hard)"
     >
       <template v-slot:prepend>
@@ -52,7 +49,6 @@ function startGame(difficulty: GameDifficulty) {
     <v-btn
       :disabled="props.disabled"
       variant="outlined"
-      color="var(--main-primary-color)"
       @click="() => startGame(GameDifficulty.Expert)"
     >
       <template v-slot:prepend>

@@ -21,5 +21,7 @@ const gamesList = ref<GameInfo[]>(games);
   justify-content: flex-start;
   gap: 16px;
   padding: 16px 0;
+  max-height: 100%;
+  overflow: auto;
 }
 </style>

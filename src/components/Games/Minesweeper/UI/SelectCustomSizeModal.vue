@@ -81,8 +81,6 @@ function validateNumberOfMines(value: number) {
                 hint="Range: 9 - 30"
                 persistent-hint
                 required
-                base-color="var(--main-secondary-color)"
-                color="var(--main-primary-color)"
                 :rules="[validateWidth]"
               ></v-text-field>
             </v-col>
@@ -96,8 +94,6 @@ function validateNumberOfMines(value: number) {
                 hint="Range: 9 - 20"
                 persistent-hint
                 required
-                base-color="var(--main-secondary-color)"
-                color="var(--main-primary-color)"
                 :rules="[validateHeight]"
               ></v-text-field>
             </v-col>
@@ -111,8 +107,6 @@ function validateNumberOfMines(value: number) {
                 :hint="`Range: 10 - ${maxNumberOfMines}`"
                 persistent-hint
                 required
-                base-color="var(--main-secondary-color)"
-                color="var(--main-primary-color)"
                 :rules="[validateNumberOfMines]"
               ></v-text-field>
             </v-col>
@@ -120,12 +114,12 @@ function validateNumberOfMines(value: number) {
         </v-container>
       </v-card-text>
       <v-card-actions :class="$style.buttons">
-        <v-btn color="var(--main-secondary-color)" variant="outlined" @click="closeDialog">
+        <v-btn color="primary" variant="outlined" @click="closeDialog">
           Close
         </v-btn>
         <v-btn
           :disabled="!validConfiguration"
-          color="var(--main-secondary-color)"
+          color="primary"
           variant="elevated"
           :class="$style.button"
           @click="submitDialog"

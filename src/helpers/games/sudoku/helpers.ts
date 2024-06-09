@@ -260,7 +260,6 @@ export function generateAreas(field: GameField): SudokuArea[] {
 
       for (let k = 0; k < 3; k++) {
         for (let l = 0; l < 3; l++) {
-          // curr += arr[i + k][j + l];
           blockCoordinates.push(rowAndColumnToIndex(i + k, j + l));
         }
       }

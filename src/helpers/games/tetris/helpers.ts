@@ -218,3 +218,11 @@ export function getRandomFigure(): TetrisFigure {
 
   return _.cloneDeep(figuresMapping[figureType]);
 }
+
+export function getRowClearBaseScore(numberOfRows: number) {
+  // 1 filled row - 100 points
+  // 2 filled rows - 300 points
+  // 3 filled rows - 700 points
+  // 4 filled rows - 1500 points
+  return (2 ** numberOfRows - 1) * 100;
+}

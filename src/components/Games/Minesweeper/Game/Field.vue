@@ -8,7 +8,7 @@ const store = useMinesweeperStore();
 function handleLeftClick(x: number, y: number) {
   const coordinates: FieldCellCoordinates = { x, y };
 
-  // We want the player's first click to always be on a blank cell, so we populate field after first click
+  // We want the player's first click to always be on a blank cell, so we populate the field after the first click
   if (!store.bombsPlanted) {
     store.populateGame(coordinates);
   }

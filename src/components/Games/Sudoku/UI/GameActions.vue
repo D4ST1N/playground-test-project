@@ -23,19 +23,19 @@ function startNew() {
 </script>
 
 <template>
-  <v-btn v-if="gameStarted" variant="outlined" color="var(--main-primary-color)" @click="solve">
+  <v-btn v-if="gameStarted" variant="outlined" @click="solve">
     <template v-slot:prepend>
       <v-icon>mdi-check</v-icon>
     </template>
     Solve
   </v-btn>
-  <v-btn v-if="gameStarted" variant="outlined" color="var(--main-primary-color)" @click="restart">
+  <v-btn v-if="gameStarted" variant="outlined" @click="restart">
     <template v-slot:prepend>
       <v-icon>mdi-restart</v-icon>
     </template>
     Restart
   </v-btn>
-  <v-btn v-if="gameStarted" variant="outlined" color="var(--main-primary-color)" @click="startNew">
+  <v-btn v-if="gameStarted" variant="outlined" @click="startNew">
     <template v-slot:prepend>
       <v-icon>mdi-window-close</v-icon>
     </template>

@@ -22,7 +22,6 @@ function openGame() {
     <v-card-actions>
       <v-btn
         :disabled="!props.gameInfo.implemented"
-        color="var(--main-primary-color)"
         @click="openGame"
       >
         Play

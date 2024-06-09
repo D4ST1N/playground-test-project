@@ -71,8 +71,7 @@ function submitDialog() {
                 :items="sizeOptions"
                 density="comfortable"
                 label="Field Size"
-                base-color="var(--main-secondary-color)"
-                color="var(--main-primary-color)"
+                color="primary"
               ></v-select>
             </v-col>
             <v-col cols="4">
@@ -81,8 +80,7 @@ function submitDialog() {
                 :items="startTilesOptions"
                 density="comfortable"
                 label="Number of tiles filled at start"
-                base-color="var(--main-secondary-color)"
-                color="var(--main-primary-color)"
+                color="primary"
               ></v-select>
             </v-col>
             <v-col cols="4">
@@ -91,8 +89,7 @@ function submitDialog() {
                 :items="fourSpawnChanceOptions"
                 density="comfortable"
                 label="Chance of spawning 4"
-                base-color="var(--main-secondary-color)"
-                color="var(--main-primary-color)"
+                color="primary"
                 item-title="label"
                 item-value="value"
               ></v-select>
@@ -107,22 +104,19 @@ function submitDialog() {
                 v-model="gameConfiguration.tileSize"
                 :items="tileSizeOptions"
                 label="Tile Size"
-                base-color="var(--main-secondary-color)"
-                color="var(--main-primary-color)"
+                color="primary"
               ></v-select>
               <v-select
                 v-model="gameConfiguration.tileGap"
                 :items="tileGapOptions"
                 label="Gap between tiles"
-                base-color="var(--main-secondary-color)"
-                color="var(--main-primary-color)"
+                color="primary"
               ></v-select>
               <v-select
                 v-model="gameConfiguration.tileRoundSize"
                 :items="tileRoundSizeOptions"
                 label="Tile rounded border radius"
-                base-color="var(--main-secondary-color)"
-                color="var(--main-primary-color)"
+                color="primary"
               ></v-select>
             </v-col>
             <v-col cols="6">
@@ -134,11 +128,11 @@ function submitDialog() {
         </v-container>
       </v-card-text>
       <v-card-actions :class="$style.buttons">
-        <v-btn color="var(--main-secondary-color)" variant="outlined" @click="closeDialog">
+        <v-btn color="primary" variant="outlined" @click="closeDialog">
           Close
         </v-btn>
         <v-btn
-          color="var(--main-secondary-color)"
+          color="primary"
           variant="elevated"
           :class="$style.button"
           @click="submitDialog"

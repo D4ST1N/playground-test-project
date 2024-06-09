@@ -104,7 +104,6 @@ const progress = computed(() => {
   width: calc(100% - 12px);
   height: 100%;
   background-color: #eeb33d4d;
-  // border: 1px solid #eeb33da7;
   transform: skew(-45deg, 0);
 }
 

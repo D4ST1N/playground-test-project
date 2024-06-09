@@ -13,7 +13,6 @@ import UserPanel from "@/components/User/UserPanel.vue";
     <div :class="$style.navigation">
       <v-btn
         variant="text"
-        color="var(--main-primary-color)"
         prepend-icon="mdi-controller"
         to="/"
         :class="$style.games"

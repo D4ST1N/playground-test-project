@@ -67,8 +67,8 @@ function changeUserAvatar(avatar: string) {
         </div>
       </v-card-text>
       <v-card-actions class="d-flex justify-end">
-        <v-btn color="amber-darken-2" variant="outlined" @click="closeDialog">Cancel</v-btn>
-        <v-btn :disabled="!validAuth" color="blue-darken-4" variant="flat" @click="submitDialog">
+        <v-btn color="primary" @click="closeDialog">Cancel</v-btn>
+        <v-btn :disabled="!validAuth" color="primary" variant="tonal" @click="submitDialog">
           Submit
         </v-btn>
       </v-card-actions>

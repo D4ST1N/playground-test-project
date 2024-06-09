@@ -35,7 +35,6 @@ function startCustomGame(config: Partial<IGameConfig>) {
     <v-btn
       :disabled="props.disabled"
       variant="outlined"
-      color="var(--main-primary-color)"
       @click="startGame"
     >
       <template v-slot:prepend>
@@ -46,7 +45,6 @@ function startCustomGame(config: Partial<IGameConfig>) {
     <v-btn
       :disabled="props.disabled"
       variant="outlined"
-      color="var(--main-primary-color)"
       @click="openModal"
     >
       <template v-slot:prepend>

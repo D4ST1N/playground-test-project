@@ -9,6 +9,7 @@ import {
   generateField,
   getRandomFigure,
   getRandomFigureType,
+  getRowClearBaseScore,
 } from "@/helpers/games/tetris/helpers";
 import {
   CellType,
@@ -457,12 +458,8 @@ export class TetrisGame {
     }
 
     if (filledRowsCount) {
-      // 1 filled row - 100 points
-      // 2 filled rows - 300 points
-      // 3 filled rows - 700 points
-      // 4 filled rows - 1500 points
       this.rowsFilled += filledRowsCount;
-      const baseFilledRowsScore = (2 ** filledRowsCount - 1) * 100;
+      const baseFilledRowsScore = getRowClearBaseScore(filledRowsCount);
       rowsScore = Math.round(baseFilledRowsScore * rowMultiplier * difficultyMultiplier);
       this.tetrisStore.increaseClearedRows(filledRowsCount);
       this.increaseDifficulty();

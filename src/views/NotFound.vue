@@ -2,7 +2,6 @@
   <div :class="$style.wrapper">
     <v-btn
       variant="text"
-      color="var(--main-primary-color)"
       prepend-icon="mdi-controller"
       to="/"
       :class="$style.games"

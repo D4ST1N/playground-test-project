@@ -79,7 +79,7 @@ function startGame() {
       <template #buttons="{ buttonDisable }">
         <v-btn
           :disabled="buttonDisable"
-          color="var(--main-primary-color)"
+          color="primary"
           :class="$style.button"
           @click="startGame"
         >

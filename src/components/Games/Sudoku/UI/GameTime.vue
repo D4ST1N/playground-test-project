@@ -19,7 +19,6 @@ const { time } = storeToRefs(sudokuStore);
   min-width: 120px;
   text-align: left;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   line-height: 1;
   gap: 8px;
