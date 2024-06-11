@@ -35,7 +35,7 @@ import InformationSection from "@/components/UI/GameInformation/InformationSecti
       title="Cell Contents"
       :items="[
         'If the cell contains a mine, the game is lost, and all the mines are revealed.',
-        'TIf the cell is empty and does not have a neighboring mine, it will be cleared, and all adjacent cells will automatically be cleared in a chain reaction.',
+        'If the cell is empty and does not have a neighboring mine, it will be cleared, and all adjacent cells will automatically be cleared in a chain reaction.',
         'If the cell is empty but has neighboring mines, it will display a number indicating the count of neighboring mines',
       ]"
     >

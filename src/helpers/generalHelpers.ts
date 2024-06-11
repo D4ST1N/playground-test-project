@@ -107,3 +107,9 @@ export function soundFabric(soundMappings: GameSoundMapping[]) {
     return acc;
   }, {});
 }
+
+export function getAssetUrl(url: string): string {
+  const assetUrl = new URL(url, import.meta.url);
+  // FIXME: temporary fix for github pages for assets paths
+  return import.meta.env.PROD ? `${assetUrl.origin}${import.meta.env.BASE_URL}${assetUrl.pathname}` : assetUrl.href;
+}

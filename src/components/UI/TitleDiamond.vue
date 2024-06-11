@@ -1,18 +1,3 @@
 <template>
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="white" :class="$style.svg">
-    <path
-      d="M0 32 
-          C20 44 20 44 32 64 
-          C44 44 44 44 64 32 
-          C44 20 44 20 32 0 
-          C20 20 20 20 0 32 Z"
-    />
-  </svg>
+  <img src="/assets/img/ui/diamond.svg" alt="diamond" />
 </template>
-
-<style lang="scss" module>
-.svg {
-  width: 16px;
-  fill: var(--main-primary-color);
-}
-</style>

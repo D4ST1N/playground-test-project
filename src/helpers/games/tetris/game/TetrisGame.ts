@@ -19,7 +19,7 @@ import {
   TetrisGameDIfficulty,
   TetrisGameField,
 } from "@/helpers/games/tetris/types";
-import { brightenColor, soundFabric } from "@/helpers/generalHelpers";
+import { brightenColor, getAssetUrl, soundFabric } from "@/helpers/generalHelpers";
 import { GameStatus, Coordinates, HexCode, KeyboardKeyCode } from "@/helpers/generalTypes";
 import { config } from "@/helpers/games/tetris/gameConfig";
 import { useUserStore } from "@/store/user";
@@ -28,27 +28,27 @@ import { useTetrisStore } from "@/store/games/tetris";
 const soundEffects = soundFabric([
   {
     key: "clear",
-    sound: "/src/assets/sounds/games/tetris/clear.mp3",
+    sound: getAssetUrl("/assets/sounds/games/tetris/clear.mp3"),
     volume: 0.4,
   },
   {
     key: "move",
-    sound: "/src/assets/sounds/games/tetris/move.m4a",
+    sound: getAssetUrl("/assets/sounds/games/tetris/move.m4a"),
     volume: 0.33,
   },
   {
     key: "rotate",
-    sound: "/src/assets/sounds/games/tetris/rotate.m4a",
+    sound: getAssetUrl("/assets/sounds/games/tetris/rotate.m4a"),
     volume: 0.75,
   },
   {
     key: "place",
-    sound: "/src/assets/sounds/games/tetris/place.m4a",
+    sound: getAssetUrl("/assets/sounds/games/tetris/place.m4a"),
     volume: 0.9,
   },
   {
     key: "lose",
-    sound: "/src/assets/sounds/games/tetris/lose.mp3",
+    sound: getAssetUrl("/assets/sounds/games/tetris/lose.mp3"),
     volume: 1,
   },
 ]);

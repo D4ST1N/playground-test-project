@@ -13,4 +13,13 @@ export default defineConfig({
   define: {
     APP_VERSION: JSON.stringify(process.env.npm_package_version),
   },
+  base: "/playground-test-project/",
+  build: {
+    target: "modules",
+    rollupOptions: {
+      output: {
+        assetFileNames: "assets/[name][extname]"
+      }
+    }
+  }
 });

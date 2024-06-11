@@ -1,16 +1,21 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { useTetrisStore } from "@/store/games/tetris";
+import { getAssetUrl } from "@/helpers/generalHelpers";
 
 const tetrisStore = useTetrisStore();
 const { numberOfFigures } = storeToRefs(tetrisStore);
+
+function getFigureUrl(key: string) {
+  return getAssetUrl(`/assets/img/tetris/figures/${key.toLocaleLowerCase()}.png`);
+}
 </script>
 
 <template>
   <div :class="$style.figuresInformation">
     <div :class="$style.figures">
       <div v-for="(figureNumber, key) in numberOfFigures" :key="key" :class="$style.figure">
-        <img :src="`/src/assets/img/tetris/figures/${key}.png`" :alt="key" />
+        <img :src="getFigureUrl(key)" :alt="key" />
         <div :class="$style.figureCount">- {{ figureNumber }}</div>
       </div>
     </div>

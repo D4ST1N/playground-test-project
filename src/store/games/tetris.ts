@@ -3,8 +3,7 @@ import { ref } from "vue";
 import { v4 as uuidv4 } from "uuid";
 import { NumberOfFigures, TetrisFigureType } from "@/helpers/games/tetris/types";
 import { useUserStore } from "@/store/user";
-import { migrations } from "@/store/migrations";
-import { soundFabric } from "@/helpers/generalHelpers";
+import { getAssetUrl, soundFabric } from "@/helpers/generalHelpers";
 import { GameStatus } from "@/helpers/generalTypes";
 import { TetrisGame } from "@/helpers/games/tetris/game/TetrisGame";
 
@@ -25,31 +24,24 @@ export interface GameHighScore {
   date: string;
 }
 
-let initialScores: GameHighScore[] = [];
-if (APP_VERSION === "0.0.1") {
-  const oldScores = migrations[APP_VERSION]();
-
-  if (oldScores !== undefined) {
-    initialScores = oldScores;
-  }
-}
+const initialScores: GameHighScore[] = [];
 
 const soundEffects = soundFabric([
   {
     key: "theme1",
-    sound: "/src/assets/sounds/games/tetris/theme1.mp3",
+    sound: getAssetUrl("/assets/sounds/games/tetris/theme1.mp3"),
     loop: true,
     volume: 0.3,
   },
   {
     key: "theme2",
-    sound: "/src/assets/sounds/games/tetris/theme2.mp3",
+    sound: getAssetUrl("/assets/sounds/games/tetris/theme2.mp3"),
     loop: true,
     volume: 0.3,
   },
   {
     key: "theme3",
-    sound: "/src/assets/sounds/games/tetris/theme3.mp3",
+    sound: getAssetUrl("/assets/sounds/games/tetris/theme3.mp3"),
     loop: true,
     volume: 0.3,
   },
@@ -116,12 +108,12 @@ export const useTetrisStore = defineStore(
         startMusic();
       };
 
-      const loop = () => {
+      const decreaseSoundVolumeLoop = () => {
         setTimeout(() => {
           if (volumeLevel >= 0) {
             volumeLevel -= 0.01;
             soundEffects[previousTheme].changeVolume(volumeLevel <= 0 ? 0 : volumeLevel);
-            loop();
+            decreaseSoundVolumeLoop();
           } else {
             soundEffects[previousTheme].pause();
             startNewTheme();
@@ -129,7 +121,7 @@ export const useTetrisStore = defineStore(
         }, 50);
       };
 
-      loop();
+      decreaseSoundVolumeLoop();
     }
 
     function setGameStatus(newStatus: GameStatus) {

@@ -34,7 +34,7 @@ import InformationSection from "@/components/UI/GameInformation/InformationSecti
       title="Scoring"
       :items="[
         'Each time you combine tiles, your score increases by the total value of the newly merged tile(s).',
-        'For example, if you merge two tiles with a value of 4, you will get 4 points. If you merge two tiles with a value of 8, you will get 8 points, and so on.',
+        'For example, if you merge two tiles with a value of 4, you will get 8 points. If you merge two tiles with a value of 8, you will get 16 points, and so on.',
       ]"
     />
     <InformationSection
@@ -62,7 +62,6 @@ import InformationSection from "@/components/UI/GameInformation/InformationSecti
       title="High Score"
       :items="[
         'The game usually keeps track of your highest score achieved during any playthrough. Players can try to beat their previous high score in subsequent games.',
-        'If you reach the 2048 tile, you have the option to continue playing for a higher score or start a new game.',
       ]"
     />
     <TextBadge>

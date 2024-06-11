@@ -1,14 +1,16 @@
 <script setup lang="ts">
+import { getAssetUrl } from "@/helpers/generalHelpers";
 import { MouseButtonType } from "@/helpers/generalTypes";
 
 const props = defineProps<{
   button: MouseButtonType;
 }>();
+const mouseButtonIcon = getAssetUrl(`/assets/img/mouse/${props.button.toLocaleLowerCase()}.png`);
 </script>
 
 <template>
   <div :class="$style.button">
-    <img :src="`/src/assets/img/mouse/${props.button}.png`" :alt="props.button" />
+    <img :src="mouseButtonIcon" :alt="props.button" />
   </div>
 </template>
 

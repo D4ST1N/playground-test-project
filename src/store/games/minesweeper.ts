@@ -18,35 +18,35 @@ import {
   FieldSize,
 } from "@/helpers/games/minesweeper/types";
 import { GameStatus } from "@/helpers/generalTypes";
-import { formatTime, soundFabric, timeout } from "@/helpers/generalHelpers";
+import { formatTime, getAssetUrl, soundFabric, timeout } from "@/helpers/generalHelpers";
 import { useUserStore } from "@/store/user";
 
 const gameAudios = soundFabric([
   {
     key: "open",
-    sound: "/src/assets/sounds/games/minesweeper/open.mp3",
+    sound: getAssetUrl("/assets/sounds/games/minesweeper/open.mp3"),
     volume: 0.4,
   },
   {
     key: "victory",
-    sound: "/src/assets/sounds/games/minesweeper/tada.mp3",
+    sound: getAssetUrl("/assets/sounds/games/minesweeper/tada.mp3"),
   },
   {
     key: "lose",
-    sound: "/src/assets/sounds/games/minesweeper/lose.mp3",
+    sound: getAssetUrl("/assets/sounds/games/minesweeper/lose.mp3"),
   },
   {
     key: "tick",
-    sound: "/src/assets/sounds/games/minesweeper/tick.mp3",
+    sound: getAssetUrl("/assets/sounds/games/minesweeper/tick.mp3"),
     volume: 0.5,
   },
   {
     key: "recycle",
-    sound: "/src/assets/sounds/games/minesweeper/recycle.mp3",
+    sound: getAssetUrl("/assets/sounds/games/minesweeper/recycle.mp3"),
   },
   {
     key: "placeLabel",
-    sound: "/src/assets/sounds/games/minesweeper/place-label.mp3",
+    sound: getAssetUrl("/assets/sounds/games/minesweeper/place-label.mp3"),
     volume: 0.3,
   },
 ]);

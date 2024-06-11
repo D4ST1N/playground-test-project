@@ -11,7 +11,7 @@ import {
 } from "@/helpers/games/sudoku/types";
 import { GameStatus } from "@/helpers/generalTypes";
 import { useUserStore } from "@/store/user";
-import { formatTime, soundFabric } from "@/helpers/generalHelpers";
+import { formatTime, getAssetUrl, soundFabric } from "@/helpers/generalHelpers";
 import { SudokuSolver } from "@/components/Games/Sudoku/Game/SudokuSolver";
 import {
   generateAreas,
@@ -29,27 +29,27 @@ interface DigitsCount {
 const gameAudios = soundFabric([
   {
     key: "win",
-    sound: "/src/assets/sounds/games/sudoku/win.mp3",
+    sound: getAssetUrl("/assets/sounds/games/sudoku/win.mp3"),
     volume: 0.6,
   },
   {
     key: "filled",
-    sound: "/src/assets/sounds/games/sudoku/filled.mp3",
+    sound: getAssetUrl("/assets/sounds/games/sudoku/filled.mp3"),
     volume: 0.3,
   },
   {
     key: "fail",
-    sound: "/src/assets/sounds/games/sudoku/fail.mp3",
+    sound: getAssetUrl("/assets/sounds/games/sudoku/fail.mp3"),
     volume: 1,
   },
   {
     key: "clear",
-    sound: "/src/assets/sounds/games/sudoku/clear.mp3",
+    sound: getAssetUrl("/assets/sounds/games/sudoku/clear.mp3"),
     volume: 1,
   },
   {
     key: "theme",
-    sound: "/src/assets/sounds/games/sudoku/theme.mp3",
+    sound: getAssetUrl("/assets/sounds/games/sudoku/theme.mp3"),
     loop: true,
     volume: 0.3,
   },

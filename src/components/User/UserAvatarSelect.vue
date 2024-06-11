@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import { getAssetUrl } from "@/helpers/generalHelpers";
 import { ref } from "vue";
 
 const props = defineProps<{
   avatar?: string;
 }>();
-const avatars = import.meta.glob("@/assets/avatars/*.png");
+const avatars = import.meta.glob("/public/assets/avatars/*.png");
 const selectedAvatar = ref<string | null>(props.avatar || null);
 const emit = defineEmits(["select-avatar"]);
 
@@ -14,11 +15,11 @@ interface Avatar {
 
 function selectAvatar(avatar: string) {
   selectedAvatar.value = avatar;
-  emit("select-avatar", avatar);
+  emit("select-avatar", getAssetUrl(avatar.replace("/public", "")));
 }
 
 function getAvatarPath(avatar: Avatar) {
-  return avatar.name.replace("/public", "");
+  return getAssetUrl(avatar.name.replace("/public", ""));
 }
 </script>
 
@@ -29,7 +30,7 @@ function getAvatarPath(avatar: Avatar) {
       :class="{ [$style.avatar]: true, [$style.selected]: avatar.name === selectedAvatar }"
       @click="selectAvatar(avatar.name)"
     >
-      <img :src="getAvatarPath(avatar)" />
+      <img :src="getAvatarPath(avatar)" :data-src="getAvatarPath(avatar)" />
     </div>
   </div>
   <div class="d-flex justify-center mt-2" :class="$style.caption">↓ Scroll down to see more ↓</div>

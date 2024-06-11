@@ -1,3 +1,9 @@
+<script lang="ts" setup>
+import { getAssetUrl } from '@/helpers/generalHelpers';
+
+const assetUrl = getAssetUrl("/assets/img/404.png");
+</script>
+
 <template>
   <div :class="$style.wrapper">
     <v-btn
@@ -8,7 +14,7 @@
     >
       All Games
     </v-btn>
-    <img src="/src/assets/img/404.png" alt="404" :class="$style.background" />
+    <img :src="assetUrl" alt="404" :class="$style.background" />
   </div>
 </template>
 

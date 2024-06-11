@@ -23,14 +23,14 @@ import {
   TwentyFortyEightKeyCode,
 } from "@/helpers/games/twentyFortyEight/types";
 import { Tile } from "@/components/Games/TwentyFortyEight/Game/Tile";
-import { soundFabric, timeout } from "@/helpers/generalHelpers";
+import { getAssetUrl, soundFabric, timeout } from "@/helpers/generalHelpers";
 import { useTwentyFortyEightStore } from "@/store/games/twentyFortyEight";
 import { GameStatus } from "@/helpers/generalTypes";
 
 const gameAudios = soundFabric([
   {
     key: "swipe",
-    sound: "/src/assets/sounds/games/2048/swipe.mp3",
+    sound: getAssetUrl("/assets/sounds/games/2048/swipe.mp3"),
     volume: 0.4,
   },
 ]);

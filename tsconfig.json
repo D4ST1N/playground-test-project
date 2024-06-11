@@ -20,7 +20,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
 
-    "types": ["node", "vue-router"],
+    "types": ["node", "vue-router", "vite/client"],
 
     "paths": {
       "@/*": ["./src/*"]
